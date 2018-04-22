@@ -2,8 +2,29 @@
   text-align: center;
 }
 
+
+.gridContainer{
+  height: 320px;
+  width: 320px;
+}
+
 .cell{
-  background-color: pink;
-  height: 20px;
-  width: 20px;
+  border: 1px solid #2c2f33;
+  height: 10px;
+  width: 10px;
+  float: left;
+  margin: 0;
+  background-color: #99aab5;
+}
+
+.gridContainer {
+    width: 480px;
+    height: 480px;
+    margin: 20px auto;
+    margin-bottom: 10px;
+}
+
+
+[data-value="true"] {
+  background-color: #23272a;
 }
