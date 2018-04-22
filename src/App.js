@@ -7,8 +7,9 @@ class App extends Component {
     this.state = {
       width: 40,
       height: 40,
-      maxNoTunnels: 400,
+      maxNoTunnels: 4,
       maxTunnelLen: 5,
+      currentTunnelLength: 5,
       valBoard: [],
       activeCell: ''
     };
@@ -65,30 +66,83 @@ class App extends Component {
     let row = Math.floor(Math.random() * (39 - 0 + 1)) + 0;
     let col = Math.floor(Math.random() * (39 - 0 + 1)) + 0;
     board[row][col] = true;
+    let tunnelLength = Math.floor(Math.random() * (this.state.maxTunnelLen - 0 + 1)) + 0;
     this.setState({
       valBoard: board,
-      activeCell: [row,col]
+      activeCell: [row,col],
+      currentTunnelLength: tunnelLength
     });
     console.log("active coord: "+ this.state.activeCell )
     console.log("active row: " + this.state.activeCell[0])
 
     while (this.state.maxNoTunnels > 0){
-      let tunnelLength = Math.floor(Math.random() * (this.state.maxTunnelLen - 0 + 1)) + 0;
+
+      console.log("tunnelLength: " + this.state.currentTunnelLength);
       let direction = Math.floor(Math.random() * (4 - 1 + 1)) + 1;
       switch(direction) {
         case 4:
           //go left
-
+          while(this.state.activeCell[1] >= 0 && this.state.currentTunnelLength > 0){
+            let board = this.state.valBoard.slice();
+            let copy = this.state.activeCell.slice();
+            copy[1] -= 1;
+            board[copy[0]][copy[1]] = true;
+            tunnelLength -=1;
+            this.setState({
+              valBoard: board,
+              activeCell: copy,
+              currentTunnelLength: this.state.currentTunnelLength - 1,
+            })
+          }
           break;
         case 3:
           //go right
+          while(this.state.activeCell[1] <= 39 && this.state.currentTunnelLength > 0){
+            let board = this.state.valBoard.slice();
+            let copy = this.state.activeCell.slice();
+            copy[1] += 1;
+            board[copy[0]][copy[1]] = true;
+            tunnelLength -=1;
+            this.setState({
+              valBoard: board,
+              activeCell: copy,
+              currentTunnelLength: this.state.currentTunnelLength - 1,
+            })
+          }
           break;
         case 2:
           //go down
+          while(this.state.activeCell[0] <= 39 && this.state.currentTunnelLength > 0){
+            let board = this.state.valBoard.slice();
+            let copy = this.state.activeCell.slice();
+            copy[0] += 1;
+            board[copy[0]][copy[1]] = true;
+            tunnelLength -=1;
+            this.setState({
+              valBoard: board,
+              activeCell: copy,
+              currentTunnelLength: this.state.currentTunnelLength - 1,
+            })
+          }
           break;
         default:
           //go up
+          while(this.state.activeCell[0] >= 0 && this.state.currentTunnelLength > 0){
+            let board = this.state.valBoard.slice();
+            let copy = this.state.activeCell.slice();
+            copy[0] -= 1;
+            board[copy[0]][copy[1]] = true;
+            tunnelLength -=1;
+            this.setState({
+              valBoard: board,
+              activeCell: copy,
+              currentTunnelLength: this.state.currentTunnelLength - 1,
+            })
+          }
       }
+      this.setState({
+        maxNoTunnels: this.state.maxNoTunnels -1,
+      })
     }
   }
 
