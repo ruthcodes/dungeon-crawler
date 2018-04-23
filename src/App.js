@@ -17,6 +17,7 @@ class App extends Component {
     this.mapGenerator = this.mapGenerator.bind(this);
     this.neighbours = this.neighbours.bind(this);
     this.validMove = this.validMove.bind(this);
+    this.randomRoomMaker = this.randomRoomMaker.bind(this);
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
@@ -45,7 +46,7 @@ class App extends Component {
   }
 
   handleKeyDown(e){
-    this.mapGenerator();
+    this.randomRoomMaker();
     if(e.keyCode === 37 || e.keyCode === 65){
       console.log("pressed left")
     }
@@ -97,6 +98,28 @@ class App extends Component {
         }
           break;
     }
+  }
+
+  randomRoomMaker(){
+    //define a random room size (so 10 is 10x10 room)
+    let room_size = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+
+    //choose random spot on the board
+    let board = this.state.valBoard.slice();
+    let row = Math.floor(Math.random() * (40 - 1 + 1)) + 1;
+    let col = Math.floor(Math.random() * (40 - 1 + 1)) + 1;
+    board[row][col] = true; //this is my random start point to draw room
+
+    //loop across and down 10, making cells true
+    for (let i=0; i<room_size; i++){
+      for (let x=0; x<room_size; x++){
+        board[row+i][col+x] = true;
+      }
+    }
+    //update the state with new room
+    this.setState({
+      valBoard: board,
+    })
   }
 
   mapGenerator(){
