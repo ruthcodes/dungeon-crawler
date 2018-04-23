@@ -7,7 +7,7 @@ class App extends Component {
     this.state = {
       width: 40,
       height: 40,
-      maxNoTunnels: 300,
+      maxNoTunnels: 100,
       maxTunnelLen: 7,
       currentTunnelLength: 5,
       valBoard: [],
@@ -16,6 +16,7 @@ class App extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.mapGenerator = this.mapGenerator.bind(this);
     this.neighbours = this.neighbours.bind(this);
+    this.validMove = this.validMove.bind(this);
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
@@ -60,6 +61,44 @@ class App extends Component {
 
   }
 
+  validMove(row,col,direction){
+    console.log("direction: " + direction)
+    switch(direction){
+      case 4:
+        if(col > 0){
+
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      case 3:
+        if(col < 39){
+
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      case 2:
+        if(row < 39){
+
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      case 1:
+        if(row > 0){
+
+          return true;
+        } else {
+          return false;
+        }
+          break;
+    }
+  }
+
   mapGenerator(){
     console.log("generating map");
     //choose a random tile on the board as starting point
@@ -82,95 +121,39 @@ class App extends Component {
       //console.log("running")
       //console.log("tunnelLength: " + this.state.currentTunnelLength);
       let direction = Math.floor(Math.random() * (4 - 1 + 1)) + 1;
-      switch(direction) {
-        case 4:
-          //go left
-          console.log("going left")
-          while(this.state.activeCell[1] > 0 && this.state.currentTunnelLength > 0){
-            let board = this.state.valBoard.slice();
-            let copy = this.state.activeCell.slice();
+
+      for(let i=0; i<this.state.currentTunnelLength; i++){
+        let board = this.state.valBoard.slice();
+        let copy = this.state.activeCell.slice();
+        let row = copy[0];
+        let col = copy[1];
+        console.log("row: " + row)
+        console.log("col: " + col)
+        if(this.validMove(row,col,direction)){
+          if(direction === 4){
             copy[1] -= 1;
-            try{
-              console.log("trying : " + copy[0]+copy[1])
-              board[copy[0]][copy[1]] = true;
-            }
-            catch(err){
-              break;
-            }
-            tunnelLength -=1;
-            this.setState({
-              valBoard: board,
-              activeCell: copy,
-              currentTunnelLength: this.state.currentTunnelLength - 1,
-            })
-          }
-          break;
-        case 3:
-          //go right
-          console.log("going right")
-          while(this.state.activeCell[1] <39 && this.state.currentTunnelLength > 0){
-            let board = this.state.valBoard.slice();
-            let copy = this.state.activeCell.slice();
+          } else if (direction === 3){
             copy[1] += 1;
-            try{
-              console.log("trying : " + copy[0]+copy[1])
-              board[copy[0]][copy[1]] = true;
-            }
-            catch(err){
-              break;
-            }
-            tunnelLength -=1;
-            this.setState({
-              valBoard: board,
-              activeCell: copy,
-              currentTunnelLength: this.state.currentTunnelLength - 1,
-            })
-          }
-          break;
-        case 2:
-          //go down
-          console.log("going down")
-          while(this.state.activeCell[0] < 39 && this.state.currentTunnelLength > 0){
-            let board = this.state.valBoard.slice();
-            let copy = this.state.activeCell.slice();
+          } else if (direction === 2){
             copy[0] += 1;
-            try{
-              console.log("trying : " + copy[0]+copy[1])
-              board[copy[0]][copy[1]] = true;
-            }
-            catch(err){
-              break;
-            }
-            tunnelLength -=1;
-            this.setState({
-              valBoard: board,
-              activeCell: copy,
-              currentTunnelLength: this.state.currentTunnelLength - 1,
-            })
-          }
-          break;
-        default:
-          //go up
-          console.log("going up")
-          while(this.state.activeCell[0] > 0 && this.state.currentTunnelLength > 0){
-            let board = this.state.valBoard.slice();
-            let copy = this.state.activeCell.slice();
+          } else {
             copy[0] -= 1;
-            try{
-              console.log("trying : " + copy[0]+copy[1])
-              board[copy[0]][copy[1]] = true;
-            }
-            catch(err){
-              break;
-            }
-            tunnelLength -=1;
-            this.setState({
-              valBoard: board,
-              activeCell: copy,
-              currentTunnelLength: this.state.currentTunnelLength - 1,
-            })
           }
+          board[copy[0]][copy[1]] = true;
+          this.setState({
+            valBoard: board,
+            activeCell: copy,
+            currentTunnelLength: this.state.currentTunnelLength - 1,
+          })
+        } else {
+          //if it's not a valid move, set activeCell to current cell and break so loop continues
+          this.setState({
+            activeCell: copy,
+          })
+          break;
+        }
       }
+
       this.setState({
         maxNoTunnels: this.state.maxNoTunnels -1,
       })
