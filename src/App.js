@@ -11,13 +11,25 @@ class App extends Component {
       maxTunnelLen: 7,
       currentTunnelLength: 5,
       valBoard: [],
-      activeCell: ''
+      activeCell: '',
+      features: 45,
+      lastRoom: true
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.mapGenerator = this.mapGenerator.bind(this);
     this.neighbours = this.neighbours.bind(this);
     this.validMove = this.validMove.bind(this);
     this.randomRoomMaker = this.randomRoomMaker.bind(this);
+
+    //new map feature functions
+    this.randomNumber = this.randomNumber.bind(this);
+    this.numberOfNeighbours = this.numberOfNeighbours.bind(this);
+    this.makeRoom = this.makeRoom.bind(this);
+    this.makeCorridor = this.makeCorridor.bind(this);
+    this.findEdge = this.findEdge.bind(this);
+    this.placeFeature = this.placeFeature.bind(this);
+    this.generateMap = this.generateMap.bind(this);
+
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
@@ -38,7 +50,7 @@ class App extends Component {
   }
 
   componentDidUpdate(){
-
+    console.log(this.findEdge());
   }
 
   componentWillUnmount() {
@@ -46,7 +58,8 @@ class App extends Component {
   }
 
   handleKeyDown(e){
-    this.randomRoomMaker();
+    this.generateMap();
+
     if(e.keyCode === 37 || e.keyCode === 65){
       console.log("pressed left")
     }
@@ -100,6 +113,113 @@ class App extends Component {
     }
   }
 
+  randomNumber(min, max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  numberOfNeighbours(row,col){
+    let x = [];
+    //bottom right
+    if(row === 39 && col === 39){
+      x = [this.state.valBoard[38][39], this.state.valBoard[39][38]];
+      //bottom left
+    } else if (row === 39 && col === 0){
+      x = [this.state.valBoard[38][0], this.state.valBoard[39][1]];
+    //top right corner
+    } else if (row === 0 && col === 39){
+      x = [this.state.valBoard[0][38], this.state.valBoard[1][39]];
+    //top left corner
+    } else if (row === 0 && col === 0){
+      x = [this.state.valBoard[0][1], this.state.valBoard[1][0]];
+    //rightmost
+    } else if (col === 39){
+      x = [this.state.valBoard[row-1][39], this.state.valBoard[row+1][39]], this.state.valBoard[row][38];
+    //leftmost
+    } else if (col === 0){
+      x = [this.state.valBoard[row-1][0], this.state.valBoard[row+1][0]], this.state.valBoard[row][1];
+    //bottom
+    } else if (row === 39){
+      x = [this.state.valBoard[39][col-1], this.state.valBoard[39][col+1]], this.state.valBoard[row-1][col];
+    //top
+    } else if (row === 0){
+      x = [this.state.valBoard[row][col-1], this.state.valBoard[row][col+1]], this.state.valBoard[row+1][col];
+    // any non-edge
+    } else {
+      x = [this.state.valBoard[row-1][col], this.state.valBoard[row][col-1], this.state.valBoard[row][col+1], this.state.valBoard[row+1][col]];
+    }
+
+    let neighNum = x.filter(Boolean);
+    return neighNum.length;
+  }
+
+  makeRoom(row,col,size){
+    let board = this.state.valBoard.slice();
+
+    for(let i=0;i<size;i++){
+      for(let x=0;x<size;x++){
+        board[row+i][col+x] = true;
+      }
+    }
+
+    this.setState({
+      valBoard:board,
+    })
+  }
+
+  makeCorridor(row,col,length,direction){
+    let board = this.state.valBoard.slice();
+
+    for(let i=0; i<length; i++){
+      if(direction === "horizontal"){
+        board[row][col+i] = true;
+      } else {
+        board[row+i][col] = true;
+      }
+    }
+    this.setState({
+      valBoard:board,
+    })
+  }
+  
+  findEdge(){
+    let edges = [];
+    this.state.valBoard.map((row,i) => {
+      if(row.includes(true)) row.map((col,x) =>{
+        if (this.numberOfNeighbours(i,x) > 0 && this.numberOfNeighbours(i,x) < 4 && this.state.valBoard[i][x] === true) edges.push([i,x])
+      })
+    })
+    console.log(edges);
+    let randomIndex = this.randomNumber(0, edges.length - 1);
+    return edges[randomIndex];
+  }
+
+  placeFeature(row,col){
+    //this.randomNumber(0,1) === 0 ? this.makeRoom(row,col,5) : this.makeCorridor(row,col,5,"horizontal");
+    if(this.state.lastRoom === true){
+      this.randomNumber(0,1) === 0 ? this.makeCorridor(row,col,5,"vertical") : this.makeCorridor(row,col,5,"horizontal");
+
+    } else {
+      this.makeRoom(row,col,5)
+    }
+    this.setState({
+      lastRoom: !this.state.lastRoom
+    })
+  }
+
+  generateMap(){
+    this.makeRoom(10,10,6);
+
+    while(this.state.features > 0){
+      let newFeatureLocation = this.findEdge();
+      this.placeFeature(newFeatureLocation[0], newFeatureLocation[1])
+      this.setState({
+        features: this.state.features -1
+      })
+    }
+
+
+  }
+
   randomRoomMaker(){
     //define a random room size (so 10 is 10x10 room)
     let room_size = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
@@ -109,6 +229,7 @@ class App extends Component {
     let row = Math.floor(Math.random() * (40 - 1 + 1)) + 1;
     let col = Math.floor(Math.random() * (40 - 1 + 1)) + 1;
     board[row][col] = true; //this is my random start point to draw room
+
 
     //loop across and down 10, making cells true
     for (let i=0; i<room_size; i++){
@@ -184,7 +305,7 @@ class App extends Component {
   }
 
   //maybe unecessary? Will use .includes() to check for neighbours
-    neighbours(n,j){
+  neighbours(n,j){
       let b = this.state.valBoard;
       let neighbours = [b[n-1][j], b[n][j-1], b[n][j+1], b[n+1][j]];
       return neighbours;
