@@ -3,11 +3,6 @@
 }
 
 
-.gridContainer{
-  height: 320px;
-  width: 320px;
-}
-
 .cell{
   border: 1px solid #2c2f33;
   height: 10px;
@@ -18,8 +13,7 @@
 }
 
 .gridContainer {
-    width: 480px;
-    height: 480px;
+    width: 720px;
     margin: 20px auto;
     margin-bottom: 10px;
 }
