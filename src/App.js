@@ -10,6 +10,8 @@ class App extends Component {
       height: 20,
       maxRooms: 20,
       rooms: [],
+      playerRow: 0,
+      playerCol: 0,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.randomNumber = this.randomNumber.bind(this);
@@ -18,10 +20,13 @@ class App extends Component {
     this.addRooms = this.addRooms.bind(this);
     this.addCorridors = this.addCorridors.bind(this);
 
+    this.placePlayer = this.placePlayer.bind(this);
+    this.validMove = this.validMove.bind(this);
+
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
-    this.generateMapArray().then(()=>this.addRooms()).then(()=>this.addCorridors()).then(()=>this.addCorridors())
+    this.generateMapArray().then(()=>this.addRooms()).then(()=>this.addCorridors()).then(()=>this.addCorridors().then(()=>this.placePlayer()))
   }
 
   componentDidUpdate(){
@@ -33,19 +38,51 @@ class App extends Component {
   }
 
   handleKeyDown(e){
-
+    e.preventDefault();
+    let board = this.state.valBoard.slice();
+    board[this.state.playerRow][this.state.playerCol] = true;
 
     if(e.keyCode === 37 || e.keyCode === 65){
-      console.log("pressed left")
+      //left
+      if(this.validMove(this.state.playerRow, this.state.playerCol-1)){
+        let board = this.state.valBoard.slice();
+        board[this.state.playerRow][this.state.playerCol-1] = "player";
+        this.setState({
+          valBoard:board,
+          playerCol: this.state.playerCol -1,
+        })
+      }
     }
+
     if (e.keyCode === 39 || e.keyCode === 68){
-      console.log("pressed right")
+      //right
+      if(this.validMove(this.state.playerRow, this.state.playerCol+1)){
+        board[this.state.playerRow][this.state.playerCol+1] = "player";
+        this.setState({
+          valBoard:board,
+          playerCol: this.state.playerCol +1,
+        })
+      }
     }
     if (e.keyCode ===38 || e.keyCode === 87){
-      console.log("pressed up")
+      //up
+      if(this.validMove(this.state.playerRow-1, this.state.playerCol)){
+        board[this.state.playerRow-1][this.state.playerCol] = "player";
+        this.setState({
+          valBoard:board,
+          playerRow: this.state.playerRow -1,
+        })
+      }
     }
     if (e.keyCode === 40 || e.keyCode === 83){
-      console.log("pressed down")
+      //down
+      if(this.validMove(this.state.playerRow+1, this.state.playerCol)){
+        board[this.state.playerRow+1][this.state.playerCol] = "player";
+        this.setState({
+          valBoard:board,
+          playerRow: this.state.playerRow +1,
+        })
+      }
     }
 
   }
@@ -198,7 +235,34 @@ class App extends Component {
     })
     return Promise.resolve('success');
   }
-    //starts top left
+
+  placePlayer(){
+    let rooms = this.state.rooms.slice();
+    let n = Math.round(rooms.length / 2);
+
+    let playerRow = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
+    let playerCol = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
+
+    let board = this.state.valBoard.slice();
+    board[playerRow][playerCol] = "player";
+
+    this.setState({
+      valBoard: board,
+      playerRow: playerRow,
+      playerCol: playerCol,
+    })
+    return Promise.resolve('Success');
+  }
+
+  validMove(row,col){
+    let board = this.state.valBoard.slice();
+    if(row >= 0 && row < 20 && col >=0 && col <60){
+        if(board[row][col] === true){
+          return true;
+        }
+    }
+    return false;
+  }
 
   randomNumber(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;

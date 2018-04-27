@@ -22,3 +22,7 @@
 [data-value="true"] {
   background-color: #23272a;
 }
+
+[data-value="player"]{
+  background-color: red;
+}
