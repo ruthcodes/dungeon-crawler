@@ -21,7 +21,7 @@ class App extends Component {
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
-    this.generateMapArray().then(() => this.addRooms()).then(() => this.addCorridors()).then(()=>this.addCorridors())
+    this.generateMapArray().then(()=>this.addRooms()).then(()=>this.addCorridors()).then(()=>this.addCorridors())
   }
 
   componentDidUpdate(){
