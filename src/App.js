@@ -69,7 +69,7 @@ class App extends Component {
 
   addRooms(){
     let counter = 0;
-    let maxAttempts = 50;
+    let maxAttempts = 100;
 
       while(counter < this.state.maxRooms && maxAttempts > 0){
         //validLocation is true
