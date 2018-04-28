@@ -23,9 +23,14 @@ class App extends Component {
       },
 
       weapons: [
-        {name:"sword", damage:10},
-        {name:"laser", damage:15},
-        {name:"sharknado", damage:20}
+        {name:"fists",damage:5},
+        {name:"brass knuckles",damage:10},
+        {name:"dagger",damage:15},
+        {name:"sword", damage:20},
+        {name:"laser", damage:25},
+        {name:"lightsaber",damage:30},
+        {name:"sharknado", damage:35},
+        {name: "kindness",damage:40}
       ],
 
       enemies: [
@@ -112,6 +117,26 @@ class App extends Component {
           rooms: [],
         })
         this.setGameEnvironment();
+      } else if(board[row][col] === "health"){
+        board[row][col] = "player";
+        let player = Object.assign({}, this.state.player);
+        player.health = player.health + (10 * this.state.dungeonFloor);
+        this.setState({
+          player: player,
+          valBoard:board,
+          playerRow: row,
+          playerCol: col,
+        })
+      } else if(board[row][col] === "weapon"){
+        board[row][col] = "player";
+        let player = Object.assign({}, this.state.player);
+        player.weapon = this.state.weapons[this.state.dungeonFloor];
+        this.setState({
+          player: player,
+          valBoard:board,
+          playerRow: row,
+          playerCol: col,
+        })
       } else{
         board[row][col] = "player";
         this.setState({
@@ -310,9 +335,7 @@ class App extends Component {
 
   validMove(row,col){
     let board = this.state.valBoard.slice();
-    if(board[row][col] === false){
-      return false;
-    } else if(row >= 0 && row < 20 && col >=0 && col <60){
+    if(row >= 0 && row < 20 && col >=0 && col <60 && board[row][col] !== false){
       return true;
     }
     return false;
