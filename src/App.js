@@ -47,12 +47,24 @@ class App extends Component {
     this.validMove = this.validMove.bind(this);
 
     this.placeGameObjects = this.placeGameObjects.bind(this);
-
+    this.setGameEnvironment = this.setGameEnvironment.bind(this);
 
 
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
+    this.setGameEnvironment();
+  }
+
+  componentDidUpdate(){
+
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  setGameEnvironment(){
     this.generateMapArray()
       .then(()=>this.addRooms())
       .then(()=>this.addCorridors())
@@ -64,62 +76,52 @@ class App extends Component {
       .then(()=>this.placeGameObjects("weapon",1))
   }
 
-  componentDidUpdate(){
-
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
   handleKeyDown(e){
     e.preventDefault();
     let board = this.state.valBoard.slice();
     board[this.state.playerRow][this.state.playerCol] = true;
+    let row;
+    let col;
 
     if(e.keyCode === 37 || e.keyCode === 65){
+      col = this.state.playerCol-1;
+      row = this.state.playerRow;
       //left
-      if(this.validMove(this.state.playerRow, this.state.playerCol-1)){
-        let board = this.state.valBoard.slice();
-        board[this.state.playerRow][this.state.playerCol-1] = "player";
-        this.setState({
-          valBoard:board,
-          playerCol: this.state.playerCol -1,
-        })
-      }
     }
 
     if (e.keyCode === 39 || e.keyCode === 68){
+      col = this.state.playerCol+1;
+      row = this.state.playerRow;
       //right
-      if(this.validMove(this.state.playerRow, this.state.playerCol+1)){
-        board[this.state.playerRow][this.state.playerCol+1] = "player";
-        this.setState({
-          valBoard:board,
-          playerCol: this.state.playerCol +1,
-        })
-      }
     }
     if (e.keyCode ===38 || e.keyCode === 87){
+      col = this.state.playerCol;
+      row = this.state.playerRow-1;
       //up
-      if(this.validMove(this.state.playerRow-1, this.state.playerCol)){
-        board[this.state.playerRow-1][this.state.playerCol] = "player";
-        this.setState({
-          valBoard:board,
-          playerRow: this.state.playerRow -1,
-        })
-      }
     }
     if (e.keyCode === 40 || e.keyCode === 83){
       //down
-      if(this.validMove(this.state.playerRow+1, this.state.playerCol)){
-        board[this.state.playerRow+1][this.state.playerCol] = "player";
+      col = this.state.playerCol;
+      row = this.state.playerRow+1;
+    }
+    if(this.validMove(row, col)){
+      if(board[row][col] === "stairs"){
+        board[row][col] = true;
+        this.setState({
+          dungeonFloor: this.state.dungeonFloor + 1,
+          rooms: [],
+        })
+        this.setGameEnvironment();
+      } else{
+        board[row][col] = "player";
         this.setState({
           valBoard:board,
-          playerRow: this.state.playerRow +1,
+          playerRow: row,
+          playerCol: col,
         })
       }
-    }
 
+    }
   }
 
   generateMapArray(){
@@ -308,10 +310,10 @@ class App extends Component {
 
   validMove(row,col){
     let board = this.state.valBoard.slice();
-    if(row >= 0 && row < 20 && col >=0 && col <60){
-        if(board[row][col] === true){
-          return true;
-        }
+    if(board[row][col] === false){
+      return false;
+    } else if(row >= 0 && row < 20 && col >=0 && col <60){
+      return true;
     }
     return false;
   }
@@ -325,7 +327,7 @@ class App extends Component {
     return (
       <div className="App">
           <Grid board={this.state.valBoard} handleClick={this.handleClick} />
-          <Stats player={this.state.player}/>
+          <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
       </div>
     )
   }
@@ -337,6 +339,7 @@ function Stats(props){
       <p>Health: {props.player.health}</p>
       <p>Level: {props.player.level}</p>
       <p>Weapon: {props.player.weapon.name}</p>
+      <p>Dungeon Level: {props.dungeonFloor}</p>
     </div>
   )
 }
