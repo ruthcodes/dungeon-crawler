@@ -47,7 +47,7 @@ class App extends Component {
     this.validMove = this.validMove.bind(this);
 
     this.placeGameObjects = this.placeGameObjects.bind(this);
-    this.placeSingleItem = this.placeSingleItem.bind(this);
+
 
 
   }
@@ -58,10 +58,10 @@ class App extends Component {
       .then(()=>this.addCorridors())
       .then(()=>this.addCorridors())
       .then(()=>this.placePlayer())
-      .then(()=>this.placeGameObjects("enemy"))
-      .then(()=>this.placeGameObjects("health"))
-      .then(()=>this.placeSingleItem("stairs"))
-      .then(()=>this.placeSingleItem("weapon"))
+      .then(()=>this.placeGameObjects("enemy",3))
+      .then(()=>this.placeGameObjects("health",3))
+      .then(()=>this.placeGameObjects("stairs",1))
+      .then(()=>this.placeGameObjects("weapon",1))
   }
 
   componentDidUpdate(){
@@ -122,7 +122,6 @@ class App extends Component {
 
   }
 
-//functions for new map attempt 3
   generateMapArray(){
     var board = [];
     var rows = [];
@@ -289,33 +288,21 @@ class App extends Component {
     return Promise.resolve('Success');
   }
 
-  placeGameObjects(object){
+  placeGameObjects(object, numberOfObjects){
     let rooms = this.state.rooms.slice();
+    let board = this.state.valBoard.slice();
 
-    this.state.enemies.forEach((enemy)=>{
+    for(let i=0; i<numberOfObjects;i++){
       let n = this.randomNumber(0,rooms.length-1);
       let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
       let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
-      let board = this.state.valBoard.slice();
       board[row][col] = object;
-      this.setState({
-        valBoard: board,
-      })
-
-    })
-    return Promise.resolve('Success');
-  }
-
-  placeSingleItem(object){
-    let rooms = this.state.rooms.slice();
-    let n = this.randomNumber(0,rooms.length-1);
-    let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
-    let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
-    let board = this.state.valBoard.slice();
-    board[row][col] = object;
+    }
     this.setState({
       valBoard: board,
     })
+
+    return Promise.resolve('Success');
   }
 
 
@@ -360,13 +347,12 @@ function Cell(props) {
     )
 }
 
-
-  function Grid(props){
-    return(
-        <div className="gridContainer">
-          {props.board.map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element}/>))}
-        </div>
-    )
-  }
+function Grid(props){
+  return(
+      <div className="gridContainer">
+        {props.board.map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element}/>))}
+      </div>
+  )
+}
 
 export default App;
