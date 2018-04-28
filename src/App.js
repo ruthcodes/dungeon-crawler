@@ -12,6 +12,29 @@ class App extends Component {
       rooms: [],
       playerRow: 0,
       playerCol: 0,
+
+      player: {
+        health: 50,
+        level: 1,
+        weapon: {
+          name: "fist",
+          damage: 5
+        }
+      },
+
+      weapons: [
+        {name:"sword", damage:10},
+        {name:"laser", damage:15},
+        {name:"sharknado", damage:20}
+      ],
+
+      enemies: [
+        {health: 10, level: 1},
+        {health: 15, level: 1},
+        {health: 10, level: 1}
+      ],
+
+      dungeonFloor: 1,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.randomNumber = this.randomNumber.bind(this);
@@ -23,10 +46,22 @@ class App extends Component {
     this.placePlayer = this.placePlayer.bind(this);
     this.validMove = this.validMove.bind(this);
 
+    this.placeGameObjects = this.placeGameObjects.bind(this);
+    this.placeSingleItem = this.placeSingleItem.bind(this);
+
+
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
-    this.generateMapArray().then(()=>this.addRooms()).then(()=>this.addCorridors()).then(()=>this.addCorridors().then(()=>this.placePlayer()))
+    this.generateMapArray()
+      .then(()=>this.addRooms())
+      .then(()=>this.addCorridors())
+      .then(()=>this.addCorridors())
+      .then(()=>this.placePlayer())
+      .then(()=>this.placeGameObjects("enemy"))
+      .then(()=>this.placeGameObjects("health"))
+      .then(()=>this.placeSingleItem("stairs"))
+      .then(()=>this.placeSingleItem("weapon"))
   }
 
   componentDidUpdate(){
@@ -254,6 +289,36 @@ class App extends Component {
     return Promise.resolve('Success');
   }
 
+  placeGameObjects(object){
+    let rooms = this.state.rooms.slice();
+
+    this.state.enemies.forEach((enemy)=>{
+      let n = this.randomNumber(0,rooms.length-1);
+      let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
+      let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
+      let board = this.state.valBoard.slice();
+      board[row][col] = object;
+      this.setState({
+        valBoard: board,
+      })
+
+    })
+    return Promise.resolve('Success');
+  }
+
+  placeSingleItem(object){
+    let rooms = this.state.rooms.slice();
+    let n = this.randomNumber(0,rooms.length-1);
+    let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
+    let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
+    let board = this.state.valBoard.slice();
+    board[row][col] = object;
+    this.setState({
+      valBoard: board,
+    })
+  }
+
+
   validMove(row,col){
     let board = this.state.valBoard.slice();
     if(row >= 0 && row < 20 && col >=0 && col <60){
@@ -273,9 +338,20 @@ class App extends Component {
     return (
       <div className="App">
           <Grid board={this.state.valBoard} handleClick={this.handleClick} />
+          <Stats player={this.state.player}/>
       </div>
     )
   }
+}
+
+function Stats(props){
+  return(
+    <div className="statsContainer">
+      <p>Health: {props.player.health}</p>
+      <p>Level: {props.player.level}</p>
+      <p>Weapon: {props.player.weapon.name}</p>
+    </div>
+  )
 }
 
 function Cell(props) {

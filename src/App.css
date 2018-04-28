@@ -26,3 +26,25 @@
 [data-value="player"]{
   background-color: red;
 }
+
+[data-value="enemy"]{
+  background-color: green;
+}
+
+[data-value="health"]{
+  background-color: yellow;
+}
+
+[data-value="stairs"]{
+  background-color: black;
+}
+
+[data-value="weapon"]{
+  background-color: blue;
+}
+
+
+
+.statsContainer{
+  display: block;
+}
