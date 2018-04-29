@@ -19,7 +19,8 @@ class App extends Component {
         weapon: {
           name: "fist",
           damage: 5
-        }
+        },
+        died: false,
       },
 
       weapons: [
@@ -33,12 +34,7 @@ class App extends Component {
         {name: "kindness",damage:40}
       ],
 
-      enemies: [
-        {health: 10, level: 1},
-        {health: 15, level: 1},
-        {health: 10, level: 1}
-      ],
-
+      enemies: [],
       dungeonFloor: 1,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -53,6 +49,7 @@ class App extends Component {
 
     this.placeGameObjects = this.placeGameObjects.bind(this);
     this.setGameEnvironment = this.setGameEnvironment.bind(this);
+    this.fightEnemy = this.fightEnemy.bind(this);
 
 
   }
@@ -115,6 +112,7 @@ class App extends Component {
         this.setState({
           dungeonFloor: this.state.dungeonFloor + 1,
           rooms: [],
+          enemies:[],
         })
         this.setGameEnvironment();
       } else if(board[row][col] === "health"){
@@ -137,7 +135,22 @@ class App extends Component {
           playerRow: row,
           playerCol: col,
         })
-      } else{
+      } else if (board[row][col] === "enemy"){
+        board[this.state.playerRow][this.state.playerCol] = "player";
+        let result = this.fightEnemy(row,col);
+        if(result === "killed"){
+          board[this.state.playerRow][this.state.playerCol] = true;
+          board[row][col] = "player";
+          this.setState({
+            valBoard:board,
+            playerRow: row,
+            playerCol: col,
+          })
+        } else if(result === "playerDied"){
+          console.log("the player has died")
+        }
+
+      }else{
         board[row][col] = "player";
         this.setState({
           valBoard:board,
@@ -318,15 +331,21 @@ class App extends Component {
   placeGameObjects(object, numberOfObjects){
     let rooms = this.state.rooms.slice();
     let board = this.state.valBoard.slice();
+    let enemies= this.state.enemies.slice();
 
     for(let i=0; i<numberOfObjects;i++){
       let n = this.randomNumber(0,rooms.length-1);
       let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
       let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
       board[row][col] = object;
+      if(object === "enemy"){
+        let newEnemy = {health: this.state.dungeonFloor*10, level: this.state.dungeonFloor, row:row, col:col}
+        enemies.push(newEnemy);
+      }
     }
     this.setState({
       valBoard: board,
+      enemies: enemies,
     })
 
     return Promise.resolve('Success');
@@ -341,6 +360,44 @@ class App extends Component {
     return false;
   }
 
+  fightEnemy(row,col){
+    //find out which monster it is based on row/col
+    let enemies = this.state.enemies.slice()
+    let player = Object.assign({}, this.state.player);
+    //this is an array with the correct enemy object in it
+    let remainingEnemies = enemies.filter(enemy => (enemy.row !== row || enemy.col !== col));
+    //console.log(remainingEnemies);
+    let enemy = enemies.filter(enemy => (enemy.row === row && enemy.col === col));
+    //calculate damage by player based on player.level and player.weapon.damage
+    //minimum is player.weapon.damage/2 * level rounded, max is player.weapon.damage * level
+    let playerAttack = Math.round(this.randomNumber(player.weapon.damage/2 * player.level, (player.weapon.damage * player.level)-1));
+
+    enemy[0].health = enemy[0].health - playerAttack;
+    if(enemy[0].health > 0){
+      remainingEnemies.push(enemy[0]);
+      let enemyAttack = Math.round(this.randomNumber(this.state.dungeonFloor * 5, this.state.dungeonFloor * 10));
+      player.health = player.health - enemyAttack;
+    }
+    this.setState({
+      enemies: remainingEnemies,
+      player: player,
+    })
+    if(enemy[0].health <= 0){
+      return "killed";
+    }
+    if(player.health <= 0){
+      player.died = true;
+      this.setState({
+        player: player,
+      })
+    }
+
+    //calculate enemy damage based off dungeonFloor(level) * 5-10
+    //player attacks, minus that number from enemy.health
+    //monster attacks, minus that number from player.health
+  }
+
+
   randomNumber(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -349,8 +406,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <Grid board={this.state.valBoard} handleClick={this.handleClick} />
-          <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
+          <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}></div>
+          <div className="game">
+            <Grid board={this.state.valBoard} handleClick={this.handleClick} />
+            <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
+          </div>
       </div>
     )
   }
