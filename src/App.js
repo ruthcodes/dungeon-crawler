@@ -16,6 +16,7 @@ class App extends Component {
       player: {
         health: 50,
         level: 1,
+        xpToLevel: 60,
         weapon: {
           name: "fist",
           damage: 5
@@ -29,9 +30,9 @@ class App extends Component {
         {name:"dagger",damage:15},
         {name:"sword", damage:20},
         {name:"laser", damage:25},
-        {name:"lightsaber",damage:30},
-        {name:"sharknado", damage:35},
-        {name: "kindness",damage:40}
+        {name:"lightsaber",damage:26},
+        {name:"sharknado", damage:28},
+        {name: "kindness",damage:30}
       ],
 
       enemies: [],
@@ -72,11 +73,11 @@ class App extends Component {
       .then(()=>this.addRooms())
       .then(()=>this.addCorridors())
       .then(()=>this.addCorridors())
-      .then(()=>this.placePlayer())
       .then(()=>this.placeGameObjects("enemy",3))
       .then(()=>this.placeGameObjects("health",3))
       .then(()=>this.placeGameObjects("stairs",1))
       .then(()=>this.placeGameObjects("weapon",1))
+      .then(()=>this.placePlayer())
   }
 
   handleKeyDown(e){
@@ -119,7 +120,7 @@ class App extends Component {
       } else if(board[row][col] === "health"){
         board[row][col] = "player";
         let player = Object.assign({}, this.state.player);
-        player.health = player.health + (10 * this.state.dungeonFloor);
+        player.health = player.health + (this.randomNumber(8*this.state.dungeonFloor, 9*this.state.dungeonFloor));
         this.setState({
           player: player,
           valBoard:board,
@@ -333,18 +334,25 @@ class App extends Component {
   placePlayer(){
     let rooms = this.state.rooms.slice();
     let n = Math.round(rooms.length / 2);
+    let notPlaced = true;
+    while (notPlaced){
 
-    let playerRow = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
-    let playerCol = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
+      let playerRow = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
+      let playerCol = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
+      let board = this.state.valBoard.slice();
+      if (board[playerRow][playerCol] === true){
+        board[playerRow][playerCol] = "player";
+        notPlaced = false;
+        this.setState({
+          valBoard: board,
+          playerRow: playerRow,
+          playerCol: playerCol,
+        })
+      } else{
+        continue;
+      }
+    }
 
-    let board = this.state.valBoard.slice();
-    board[playerRow][playerCol] = "player";
-
-    this.setState({
-      valBoard: board,
-      playerRow: playerRow,
-      playerCol: playerCol,
-    })
     return Promise.resolve('Success');
   }
 
@@ -352,21 +360,34 @@ class App extends Component {
     let rooms = this.state.rooms.slice();
     let board = this.state.valBoard.slice();
     let enemies= this.state.enemies.slice();
+    let notPlaced = true;
 
     for(let i=0; i<numberOfObjects;i++){
-      let n = this.randomNumber(0,rooms.length-1);
-      let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
-      let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
-      board[row][col] = object;
-      if(object === "enemy"){
-        let newEnemy = {health: this.state.dungeonFloor*10, level: this.state.dungeonFloor, row:row, col:col}
-        enemies.push(newEnemy);
+      while(notPlaced){
+        let n = this.randomNumber(0,rooms.length-1);
+        let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
+        let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
+        if (board[row][col] === true){
+          board[row][col] = object;
+          notPlaced = false;
+          if(object === "enemy"){
+            let newEnemy = {health: this.randomNumber(this.state.dungeonFloor*10, this.state.dungeonFloor*13), level: this.state.dungeonFloor, row:row, col:col}
+            enemies.push(newEnemy);
+          }
+
+          this.setState({
+            valBoard: board,
+            enemies: enemies,
+          })
+        } else {
+          continue;
+        }
+
       }
+      notPlaced = true;
+
     }
-    this.setState({
-      valBoard: board,
-      enemies: enemies,
-    })
+
 
     return Promise.resolve('Success');
   }
@@ -395,7 +416,7 @@ class App extends Component {
     enemy[0].health = enemy[0].health - playerAttack;
     if(enemy[0].health > 0){
       remainingEnemies.push(enemy[0]);
-      let enemyAttack = Math.round(this.randomNumber(this.state.dungeonFloor * 5, this.state.dungeonFloor * 10));
+      let enemyAttack = Math.round(this.randomNumber(this.state.dungeonFloor * 9, this.state.dungeonFloor * 10));
       player.health = player.health - enemyAttack;
     }
     this.setState({
@@ -403,6 +424,17 @@ class App extends Component {
       player: player,
     })
     if(enemy[0].health <= 0){
+      player.xpToLevel -= 10;
+      if (player.xpToLevel === 0){
+        player.level +=1;
+        player.xpToLevel = player.level * 60;
+        this.setState({
+          player: player,
+        })
+      }
+      this.setState({
+
+      })
       return "killed";
     }
     if(player.health <= 0){
@@ -440,8 +472,9 @@ function Stats(props){
     <div className="statsContainer">
       <p>Health: {props.player.health}</p>
       <p>Level: {props.player.level}</p>
+      <p>XP to next level: {props.player.xpToLevel}</p>
       <p>Weapon: {props.player.weapon.name}</p>
-      <p>Dungeon Level: {props.dungeonFloor}</p>
+      <p>Dungeon level: {props.dungeonFloor}</p>
     </div>
   )
 }
