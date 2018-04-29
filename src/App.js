@@ -18,7 +18,7 @@ class App extends Component {
         level: 1,
         xpToLevel: 60,
         weapon: {
-          name: "fist",
+          name: "fists",
           damage: 5
         },
         died: false,
@@ -34,6 +34,8 @@ class App extends Component {
         {name:"sharknado", damage:28},
         {name: "kindness",damage:30}
       ],
+
+      weaponCounter: 1,
 
       enemies: [],
       boss: {health:100},
@@ -137,12 +139,13 @@ class App extends Component {
       } else if(board[row][col] === "weapon"){
         board[row][col] = "player";
         let player = Object.assign({}, this.state.player);
-        player.weapon = this.state.weapons[this.state.dungeonFloor];
+        player.weapon = this.state.weapons[this.state.weaponCounter];
         this.setState({
           player: player,
           valBoard:board,
           playerRow: row,
           playerCol: col,
+          weaponCounter: this.state.weaponCounter + 1,
         })
       } else if (board[row][col] === "enemy"){
         board[this.state.playerRow][this.state.playerCol] = "player";
