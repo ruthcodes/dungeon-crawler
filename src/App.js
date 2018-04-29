@@ -25,7 +25,6 @@ class App extends Component {
       },
 
       weapons: [
-        {name:"fists",damage:5},
         {name:"brass knuckles",damage:10},
         {name:"dagger",damage:15},
         {name:"sword", damage:20},
@@ -35,7 +34,7 @@ class App extends Component {
         {name: "kindness",damage:30}
       ],
 
-      weaponCounter: 1,
+      weaponCounter: 0,
 
       enemies: [],
       boss: {health:100},
@@ -378,8 +377,10 @@ class App extends Component {
         let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
         let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
         if (board[row][col] === true){
-          board[row][col] = object;
-          notPlaced = false;
+          if(object != "boss"){
+            board[row][col] = object;
+            notPlaced = false;
+          }
           if(object === "enemy"){
             let newEnemy = {health: this.randomNumber(this.state.dungeonFloor*10, this.state.dungeonFloor*13), level: this.state.dungeonFloor, row:row, col:col}
             enemies.push(newEnemy);
