@@ -397,7 +397,6 @@ class App extends Component {
     //monster attacks, minus that number from player.health
   }
 
-
   randomNumber(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -406,7 +405,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}></div>
+          <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}><span className="diedText" style={(this.state.player.died ? {visibility:"visible"} : {visibility:"hidden"})}>"You died. Restart?"</span></div>
           <div className="game">
             <Grid board={this.state.valBoard} handleClick={this.handleClick} />
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
