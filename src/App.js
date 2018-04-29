@@ -38,6 +38,7 @@ class App extends Component {
       dungeonFloor: 1,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.randomNumber = this.randomNumber.bind(this);
     //map generation functions
     this.generateMapArray = this.generateMapArray.bind(this);
@@ -160,6 +161,25 @@ class App extends Component {
       }
 
     }
+  }
+
+  handleClick(){
+    let player = Object.assign({}, this.state.player);
+    player.health = 50;
+    player.level = 1;
+    player.weapon = {
+      name: "fist",
+      damage: 5
+    };
+    player.died = false;
+
+    this.setState({
+      player: player,
+      rooms: [],
+      enemies: [],
+      dungeonFloor: 1,
+    })
+    this.setGameEnvironment();
   }
 
   generateMapArray(){
@@ -405,7 +425,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}><span className="diedText" style={(this.state.player.died ? {visibility:"visible"} : {visibility:"hidden"})}>"You died. Restart?"</span></div>
+          <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}><span className="diedText" style={(this.state.player.died ? {visibility:"visible"} : {visibility:"hidden"})}>You died. Restart?<button onClick={this.handleClick}>OK</button></span></div>
           <div className="game">
             <Grid board={this.state.valBoard} handleClick={this.handleClick} />
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>

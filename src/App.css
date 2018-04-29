@@ -61,12 +61,15 @@ html{
   padding: 15px;
   background-color: white;
   color: black;
-  margin: 0 auto;
+  border:1px solid red;
   text-align: center;
-  transition: visibility 25s;
-  -webkit-transition: visibility 25s;
+
+}
+button{
+  margin: 5px;
 }
 
 .statsContainer{
   display: block;
+  color: white;
 }
