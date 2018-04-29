@@ -36,6 +36,7 @@ class App extends Component {
       ],
 
       enemies: [],
+      boss: {health:100},
       dungeonFloor: 1,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -75,9 +76,15 @@ class App extends Component {
       .then(()=>this.addCorridors())
       .then(()=>this.placeGameObjects("enemy",3))
       .then(()=>this.placeGameObjects("health",3))
-      .then(()=>this.placeGameObjects("stairs",1))
       .then(()=>this.placeGameObjects("weapon",1))
       .then(()=>this.placePlayer())
+      .then(function(value){
+        if(this.state.dungeonFloor === 7) {
+        this.placeGameObjects("boss",1)
+      } else {
+        this.placeGameObjects("stairs",1)
+      }
+    }.bind(this))
   }
 
   handleKeyDown(e){
@@ -373,6 +380,15 @@ class App extends Component {
           if(object === "enemy"){
             let newEnemy = {health: this.randomNumber(this.state.dungeonFloor*10, this.state.dungeonFloor*13), level: this.state.dungeonFloor, row:row, col:col}
             enemies.push(newEnemy);
+          }
+          if(object === "boss"){
+            if(board[row][col+1] && board[row+1][col] && board[row+1][col+1]){
+              board[row][col] = object;
+              board[row][col+1] = object;
+              board[row+1][col] = object;
+              board[row+1][col+1] = object;
+              notPlaced = false;
+            }
           }
 
           this.setState({

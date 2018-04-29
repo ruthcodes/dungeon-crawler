@@ -46,6 +46,9 @@ html{
   background-color: blue;
 }
 
+[data-value="boss"]{
+  background-color: purple;
+}
 .overlay{
   position: absolute;
   background-color: black;
