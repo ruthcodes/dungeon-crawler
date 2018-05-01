@@ -37,7 +37,7 @@ class App extends Component {
       weaponCounter: 0,
 
       enemies: [],
-      boss: {health:100},
+      boss: {health:100, row:0, row1:0, col:0, col1:0},
       dungeonFloor: 1,
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -54,15 +54,14 @@ class App extends Component {
     this.placeGameObjects = this.placeGameObjects.bind(this);
     this.setGameEnvironment = this.setGameEnvironment.bind(this);
     this.fightEnemy = this.fightEnemy.bind(this);
+    this.fightBoss = this.fightBoss.bind(this);
 
+    this.checkRendering = this.checkRendering.bind(this);
 
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
-    this.setGameEnvironment();
-  }
-
-  componentDidUpdate(){
+    this.setGameEnvironment()
 
   }
 
@@ -76,7 +75,13 @@ class App extends Component {
       .then(()=>this.addCorridors())
       .then(()=>this.addCorridors())
       .then(()=>this.placeGameObjects("enemy",3))
-      .then(()=>this.placeGameObjects("health",3))
+      .then(function(value){
+        if(this.state.dungeonFloor < 5) {
+        this.placeGameObjects("health",3)
+      } else {
+        this.placeGameObjects("health",4)
+      }
+    }.bind(this))
       .then(()=>this.placeGameObjects("weapon",1))
       .then(()=>this.placePlayer())
       .then(function(value){
@@ -86,12 +91,14 @@ class App extends Component {
         this.placeGameObjects("stairs",1)
       }
     }.bind(this))
+    return Promise.resolve('Success');
   }
 
   handleKeyDown(e){
     e.preventDefault();
     let board = this.state.valBoard.slice();
     board[this.state.playerRow][this.state.playerCol] = true;
+    let boss = Object.assign({}, this.state.boss);
     let row;
     let col;
 
@@ -161,6 +168,24 @@ class App extends Component {
           console.log("the player has died")
         }
 
+      } else if(board[row][col] === "boss"){
+        board[this.state.playerRow][this.state.playerCol] = "player";
+        let result = this.fightBoss();
+        if(result === "killed"){
+          board[boss.row][boss.col] = true;
+          board[boss.row1][boss.col1] = true;
+          board[boss.row][boss.col1] = true;
+          board[boss.row1][boss.col] = true;
+          board[this.state.playerRow][this.state.playerCol] = true;
+          board[row][col] = "player";
+          this.setState({
+            valBoard:board,
+            playerRow: row,
+            playerCol: col,
+            boss: boss,
+          })
+        }
+
       }else{
         board[row][col] = "player";
         this.setState({
@@ -188,6 +213,8 @@ class App extends Component {
       rooms: [],
       enemies: [],
       dungeonFloor: 1,
+      weaponCounter:0,
+      boss: {health:100, row:0, row1:0, col:0, col1:0},
     })
     this.setGameEnvironment();
   }
@@ -369,6 +396,7 @@ class App extends Component {
     let rooms = this.state.rooms.slice();
     let board = this.state.valBoard.slice();
     let enemies= this.state.enemies.slice();
+    let boss = Object.assign({}, this.state.boss);
     let notPlaced = true;
 
     for(let i=0; i<numberOfObjects;i++){
@@ -377,7 +405,7 @@ class App extends Component {
         let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
         let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
         if (board[row][col] === true){
-          if(object != "boss"){
+          if(object !== "boss"){
             board[row][col] = object;
             notPlaced = false;
           }
@@ -391,6 +419,10 @@ class App extends Component {
               board[row][col+1] = object;
               board[row+1][col] = object;
               board[row+1][col+1] = object;
+              boss.row = row;
+              boss.row1 = row+1;
+              boss.col = col;
+              boss.col1 = col+1;
               notPlaced = false;
             }
           }
@@ -398,6 +430,7 @@ class App extends Component {
           this.setState({
             valBoard: board,
             enemies: enemies,
+            boss: boss,
           })
         } else {
           continue;
@@ -411,7 +444,6 @@ class App extends Component {
 
     return Promise.resolve('Success');
   }
-
 
   validMove(row,col){
     let board = this.state.valBoard.slice();
@@ -452,9 +484,6 @@ class App extends Component {
           player: player,
         })
       }
-      this.setState({
-
-      })
       return "killed";
     }
     if(player.health <= 0){
@@ -469,23 +498,57 @@ class App extends Component {
     //monster attacks, minus that number from player.health
   }
 
+  fightBoss(){
+    let boss = Object.assign({}, this.state.boss);
+    let player = Object.assign({}, this.state.player);
+    let playerAttack = Math.round(this.randomNumber(player.weapon.damage/2 * player.level, (player.weapon.damage * player.level)-1));
+
+    boss.health = boss.health - playerAttack;
+    if (boss.health > 0){
+      let enemyAttack = Math.round(this.randomNumber(this.state.dungeonFloor * 10, this.state.dungeonFloor * 11));
+      player.health = player.health - enemyAttack;
+    }
+    this.setState({
+      boss: boss,
+      player: player,
+    })
+    if(player.health <= 0){
+      player.died = true;
+      this.setState({
+        player: player,
+      })
+    }
+    if(boss.health <=0){
+      return "killed";
+    }
+  }
+
   randomNumber(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  checkRendering(row,col){
+    if(row === this.state.playerRow -2 || row === this.state.playerRow -1 || row === this.state.playerRow || row === this.state.playerRow +1 || row === this.state.playerRow +2){
+      if(col === this.state.playerCol -2 || col === this.state.playerCol -1 || col === this.state.playerCol || col === this.state.playerCol +1 || col === this.state.playerCol +2 ){
+        return "Visible"
+      }
+    }
+    return "Invisible";
+  }
 
   render() {
     return (
       <div className="App">
           <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}><span className="diedText" style={(this.state.player.died ? {visibility:"visible"} : {visibility:"hidden"})}>You died. Restart?<button onClick={this.handleClick}>OK</button></span></div>
           <div className="game">
-            <Grid board={this.state.valBoard} handleClick={this.handleClick} />
+            <Grid board={this.state.valBoard} handleClick={this.handleClick} checkRendering={this.checkRendering}/>
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
           </div>
       </div>
     )
   }
 }
+
 
 function Stats(props){
   return(
@@ -501,14 +564,17 @@ function Stats(props){
 
 function Cell(props) {
     return (
-      <div className="cell" data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']}></div>
+
+      <div className={"cell"} data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']} data-col={props['data-col']} data-isvis={props['data-isvis']}></div>
     )
 }
+
 
 function Grid(props){
   return(
       <div className="gridContainer">
-        {props.board.map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element}/>))}
+
+        {props.board.map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element} data-isvis={props.checkRendering(x,i)}/>))}
       </div>
   )
 }
