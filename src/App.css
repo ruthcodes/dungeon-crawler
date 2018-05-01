@@ -16,7 +16,8 @@ html{
 }
 
 .gridContainer {
-    width: 720px;
+    /* width:720px */
+    width: 250px;
     margin: 20px auto;
     margin-bottom: 10px;
 }
@@ -55,7 +56,7 @@ html{
 }
 
 [data-isVis="Invisible"]{
-  opacity: 1;
+  opacity: 0;
 }
 
 [data-isVis="Faint"]{

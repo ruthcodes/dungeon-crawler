@@ -6,7 +6,7 @@ class App extends Component {
     super(props);
     this.state = {
       valBoard: [],
-      width: 60,
+      width: 80,
       height: 20,
       maxRooms: 20,
       rooms: [],
@@ -246,10 +246,10 @@ class App extends Component {
         var height = this.randomNumber(5,8);
         var width = this.randomNumber(5,8);
         var locationRow = this.randomNumber(2,18);
-        var locationCol = this.randomNumber(2,58);
+        var locationCol = this.randomNumber(10,68);
         //check if height and width + locations is within the bounds of the board
         //if it's not continue (go back to the top and make new room)
-        if ((width + locationCol > 59) || (height + locationRow > 19)){
+        if ((width + locationCol > 69) ||  (height + locationRow > 19)){
           maxAttempts--;
           continue;
         }
@@ -447,7 +447,7 @@ class App extends Component {
 
   validMove(row,col){
     let board = this.state.valBoard.slice();
-    if(row >= 0 && row < 20 && col >=0 && col <60 && board[row][col] !== false){
+    if(row >= 0 && row < 20 && col >=0 && col <80 && board[row][col] !== false){
       return true;
     }
     return false;
@@ -530,10 +530,11 @@ class App extends Component {
   checkRendering(row,col){
     let playR = this.state.playerRow;
     let playC = this.state.playerCol;
-    if(row === playR -2 || row === playR -1 || row === playR || row === playR +1 || row === playR +2){
 
+    if(row === playR -2 || row === playR -1 || row === playR || row === playR +1 || row === playR +2){
+      if(col === playC -2 || col === playC -1 || col === playC || col === playC +1 || col === playC +2 ){
         return "Visible"
-      
+      }
     }
     if (row === playR -4 || row === playR -3 || row === playR -2 || row === playR -1 || row === playR || row === playR +1 || row === playR +2 ||row === playR +3 || row === playR +4){
       if(col === playC -4 || col === playC -3 || col === playC -2 || col === playC -1 || col === playC || col === playC +1 || col === playC +2 || col === playC +3 || col === playC +4 ){
@@ -580,9 +581,7 @@ function Cell(props) {
 function Grid(props){
   return(
       <div className="gridContainer">
-
-
-        {props.board.slice(props.playerRow-5,props.playerRow+5).map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element} data-isvis={props.checkRendering(x,i)}/>))}
+        {props.board.map((nested, x) => nested.slice(props.playerCol-10,props.playerCol+10).map((element, i) => <Cell key={i+x} data-row={x} data-col={props.playerCol-10+i} data-value={element} data-isvis={props.checkRendering(x,props.playerCol-10+i)}/>))}
       </div>
   )
 }
