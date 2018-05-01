@@ -528,9 +528,16 @@ class App extends Component {
   }
 
   checkRendering(row,col){
-    if(row === this.state.playerRow -2 || row === this.state.playerRow -1 || row === this.state.playerRow || row === this.state.playerRow +1 || row === this.state.playerRow +2){
-      if(col === this.state.playerCol -2 || col === this.state.playerCol -1 || col === this.state.playerCol || col === this.state.playerCol +1 || col === this.state.playerCol +2 ){
+    let playR = this.state.playerRow;
+    let playC = this.state.playerCol;
+    if(row === playR -2 || row === playR -1 || row === playR || row === playR +1 || row === playR +2){
+
         return "Visible"
+      
+    }
+    if (row === playR -4 || row === playR -3 || row === playR -2 || row === playR -1 || row === playR || row === playR +1 || row === playR +2 ||row === playR +3 || row === playR +4){
+      if(col === playC -4 || col === playC -3 || col === playC -2 || col === playC -1 || col === playC || col === playC +1 || col === playC +2 || col === playC +3 || col === playC +4 ){
+        return "Faint";
       }
     }
     return "Invisible";
@@ -541,7 +548,7 @@ class App extends Component {
       <div className="App">
           <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}><span className="diedText" style={(this.state.player.died ? {visibility:"visible"} : {visibility:"hidden"})}>You died. Restart?<button onClick={this.handleClick}>OK</button></span></div>
           <div className="game">
-            <Grid board={this.state.valBoard} handleClick={this.handleClick} checkRendering={this.checkRendering}/>
+            <Grid board={this.state.valBoard} handleClick={this.handleClick} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol}/>
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
           </div>
       </div>
@@ -574,7 +581,8 @@ function Grid(props){
   return(
       <div className="gridContainer">
 
-        {props.board.map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element} data-isvis={props.checkRendering(x,i)}/>))}
+
+        {props.board.slice(props.playerRow-5,props.playerRow+5).map((nested, x) => nested.map((element, i) => <Cell key={i+x} data-row={x} data-col={i} data-value={element} data-isvis={props.checkRendering(x,i)}/>))}
       </div>
   )
 }

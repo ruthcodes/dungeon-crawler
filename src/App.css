@@ -55,7 +55,11 @@ html{
 }
 
 [data-isVis="Invisible"]{
-  opacity: 0;
+  opacity: 1;
+}
+
+[data-isVis="Faint"]{
+  opacity: 0.3;
 }
 
 .overlay{
