@@ -15,6 +15,18 @@ html{
   background-color: #99aab5;
 }
 
+.wall1{
+  background-color:#6a6254;
+}
+
+.wall2{
+  background-color:#584f3f;
+}
+
+.wall3{
+  background-color:#463c2a;
+}
+
 .gridContainer {
     /* width:720px */
     width: 600px;

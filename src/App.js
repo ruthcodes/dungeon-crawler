@@ -49,6 +49,7 @@ class App extends Component {
     this.generateMapArray = this.generateMapArray.bind(this);
     this.addRooms = this.addRooms.bind(this);
     this.addCorridors = this.addCorridors.bind(this);
+    this.wallColour = this.wallColour.bind(this);
 
     this.placePlayer = this.placePlayer.bind(this);
     this.validMove = this.validMove.bind(this);
@@ -377,6 +378,17 @@ class App extends Component {
     return Promise.resolve('success');
   }
 
+  wallColour(){
+    let num = this.randomNumber(1,3);
+    if (num === 1){
+      return "wall1";
+    } else if(num === 2){
+      return "wall2";
+    } else {
+      return "wall3";
+    }
+  }
+
   placePlayer(){
     let rooms = this.state.rooms.slice();
     let n = Math.round(rooms.length / 2);
@@ -559,7 +571,7 @@ class App extends Component {
       <div className="App">
 
           <div className="game">
-            <Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/>
+            <Grid board={this.state.valBoard} wallColour={this.wallColour} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/>
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
             <AddButton onClick={this.toggleDarkness} />
           </div>
@@ -583,7 +595,7 @@ function Stats(props){
 
 function Cell(props) {
     return (
-      <div className={"cell"} data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']} data-col={props['data-col']} data-isvis={props['data-isvis']} dark={props.dark}></div>
+      <div className={"cell" + ' ' + (props.wallColour())} data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']} data-col={props['data-col']} data-isvis={props['data-isvis']} dark={props.dark}></div>
     )
 }
 
@@ -597,7 +609,7 @@ function Grid(props){
   return(
       <div className="gridContainer">
         {props.board.map((nested, x) => nested.slice(props.playerCol-10,props.playerCol+10).map((element, i) =>
-          <Cell key={i+x} data-row={x} data-col={props.playerCol-10+i} data-value={element} data-isvis={(props.dark) ? props.checkRendering(x,props.playerCol-10+i) : "Visible"}/>))}
+          <Cell key={i+x} data-row={x} wallColour={props.wallColour} data-col={props.playerCol-10+i} data-value={element} data-isvis={(props.dark) ? props.checkRendering(x,props.playerCol-10+i) : "Visible"}/>))}
       </div>
   )
 }
