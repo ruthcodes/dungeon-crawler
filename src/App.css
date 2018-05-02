@@ -12,20 +12,10 @@ html{
   width: 30px;
   float: left;
   margin: 0;
+  background: linear-gradient(to bottom right, #6a6254, #584f3f);
   background-color: #99aab5;
 }
 
-.wall1{
-  background-color:#6a6254;
-}
-
-.wall2{
-  background-color:#584f3f;
-}
-
-.wall3{
-  background-color:#463c2a;
-}
 
 .gridContainer {
     /* width:720px */
@@ -36,31 +26,31 @@ html{
 
 
 [data-value="true"] {
-  background-color: #23272a;
+  background: #23272a;
 }
 
 [data-value="player"]{
-  background-color: red;
+  background: red;
 }
 
 [data-value="enemy"]{
-  background-color: green;
+  background: green;
 }
 
 [data-value="health"]{
-  background-color: yellow;
+  background: yellow;
 }
 
 [data-value="stairs"]{
-  background-color: black;
+  background: black;
 }
 
 [data-value="weapon"]{
-  background-color: blue;
+  background: blue;
 }
 
 [data-value="boss"]{
-  background-color: purple;
+  background: purple;
 }
 
 [data-isVis="Visible"]{
