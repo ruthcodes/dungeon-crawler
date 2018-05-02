@@ -7,9 +7,9 @@ html{
 }
 
 .cell{
-  border: 1px solid #2c2f33;
-  height: 10px;
-  width: 10px;
+  /*border: 1px solid #2c2f33;*/
+  height: 30px;
+  width: 30px;
   float: left;
   margin: 0;
   background-color: #99aab5;
@@ -17,7 +17,7 @@ html{
 
 .gridContainer {
     /* width:720px */
-    width: 250px;
+    width: 600px;
     margin: 20px auto;
     margin-bottom: 10px;
 }
