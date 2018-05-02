@@ -93,6 +93,27 @@ button{
   color: white;
 }
 
+
+#player{
+  color:red;
+}
+
+#enemy{
+  color: green;
+}
+
+#health{
+  color:yellow;
+}
+
+#weapon{
+  color: blue;
+}
+
+#stairs{
+  color: black;
+}
+
 .invisible{
   background-color: black;
   height: 10px;

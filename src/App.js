@@ -562,6 +562,7 @@ class App extends Component {
             <Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/>
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
             <AddButton onClick={this.toggleDarkness} />
+            <Guide />
           </div>
       </div>
     )
@@ -599,6 +600,18 @@ function Grid(props){
         {props.board.map((nested, x) => nested.slice(props.playerCol-10,props.playerCol+10).map((element, i) =>
           <Cell key={i+x} data-row={x} wallColour={props.wallColour} data-col={props.playerCol-10+i} data-value={element} data-isvis={(props.dark) ? props.checkRendering(x,props.playerCol-10+i) : "Visible"}/>))}
       </div>
+  )
+}
+
+function Guide(props){
+  return (
+    <div className="guideContainer">
+      <p id="player">Player</p>
+      <p id="health">Health</p>
+      <p id="enemy">Enemy</p>
+      <p id="weapon">Weapon</p>
+      <p id="stairs">Stairs</p>
+    </div>
   )
 }
 
