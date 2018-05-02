@@ -102,3 +102,7 @@ button{
 .limit{
   width:40px;
 }
+
+button{
+  z-index: 100;
+}

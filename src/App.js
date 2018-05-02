@@ -12,6 +12,7 @@ class App extends Component {
       rooms: [],
       playerRow: 0,
       playerCol: 0,
+      dark: true,
 
       player: {
         health: 50,
@@ -42,6 +43,7 @@ class App extends Component {
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.toggleDarkness = this.toggleDarkness.bind(this);
     this.randomNumber = this.randomNumber.bind(this);
     //map generation functions
     this.generateMapArray = this.generateMapArray.bind(this);
@@ -217,6 +219,14 @@ class App extends Component {
       boss: {health:100, row:0, row1:0, col:0, col1:0},
     })
     this.setGameEnvironment();
+  }
+
+  toggleDarkness(){
+    console.log("toggling");
+    this.setState({
+      dark: !this.state.dark,
+    })
+
   }
 
   generateMapArray(){
@@ -547,10 +557,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <div className="overlay" style={(this.state.player.died ? {opacity: 1}: {opacity:0})}><span className="diedText" style={(this.state.player.died ? {visibility:"visible"} : {visibility:"hidden"})}>You died. Restart?<button onClick={this.handleClick}>OK</button></span></div>
+
           <div className="game">
-            <Grid board={this.state.valBoard} handleClick={this.handleClick} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol}/>
+            <Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/>
             <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
+            <AddButton onClick={this.toggleDarkness} />
           </div>
       </div>
     )
@@ -572,16 +583,21 @@ function Stats(props){
 
 function Cell(props) {
     return (
-
-      <div className={"cell"} data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']} data-col={props['data-col']} data-isvis={props['data-isvis']}></div>
+      <div className={"cell"} data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']} data-col={props['data-col']} data-isvis={props['data-isvis']} dark={props.dark}></div>
     )
 }
 
+function AddButton(props){
+  return (
+    <button onClick={props.onClick}>Toggle Darkness</button>
+  )
+}
 
 function Grid(props){
   return(
       <div className="gridContainer">
-        {props.board.map((nested, x) => nested.slice(props.playerCol-10,props.playerCol+10).map((element, i) => <Cell key={i+x} data-row={x} data-col={props.playerCol-10+i} data-value={element} data-isvis={props.checkRendering(x,props.playerCol-10+i)}/>))}
+        {props.board.map((nested, x) => nested.slice(props.playerCol-10,props.playerCol+10).map((element, i) =>
+          <Cell key={i+x} data-row={x} data-col={props.playerCol-10+i} data-value={element} data-isvis={(props.dark) ? props.checkRendering(x,props.playerCol-10+i) : "Visible"}/>))}
       </div>
   )
 }
