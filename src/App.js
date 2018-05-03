@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import humane from 'humane-js';
+import 'humane-js/themes/original.css';
+import './bootstrap.min.css';
 
 class App extends Component {
   constructor(props){
@@ -59,11 +62,12 @@ class App extends Component {
     this.fightBoss = this.fightBoss.bind(this);
 
     this.checkRendering = this.checkRendering.bind(this);
+    this.reset = this.reset.bind(this);
 
   }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
-    this.setGameEnvironment()
+    this.setGameEnvironment();
 
   }
 
@@ -497,10 +501,8 @@ class App extends Component {
       return "killed";
     }
     if(player.health <= 0){
-      player.died = true;
-      this.setState({
-        player: player,
-      })
+      humane.log("You died");
+      this.reset();
     }
 
     //calculate enemy damage based off dungeonFloor(level) * 5-10
@@ -523,16 +525,44 @@ class App extends Component {
       player: player,
     })
     if(player.health <= 0){
+      humane.log("You died");
+      this.reset();
       player.died = true;
       this.setState({
         player: player,
       })
     }
     if(boss.health <=0){
+      humane.log("You win!");
+      this.reset();
       return "killed";
     }
   }
 
+  reset(){
+    let boss = Object.assign({}, this.state.boss);
+    let player = Object.assign({}, this.state.player);
+    player.health= 50;
+    player.level= 1;
+    player.xpToLevel= 60;
+    player.weapon= {
+      name: "fists",
+      damage: 5
+    },
+    player.died= false;
+    boss = {health:100, row:0, row1:0, col:0, col1:0};
+    this.setState({
+      rooms: [],
+      playerRow: 0,
+      playerCol: 0,
+      weaponCounter:0,
+      enemies: [],
+      dungeonFloor: 1,
+      player: player,
+      boss: boss,
+    })
+    this.setGameEnvironment();
+  }
   randomNumber(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -558,11 +588,27 @@ class App extends Component {
     return (
       <div className="App">
 
-          <div className="game">
-            <Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/>
-            <Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/>
-            <AddButton onClick={this.toggleDarkness} />
-            <Guide />
+          <div className="row game">
+            <div className="col-md-8">
+              <div className="row">
+                <div className="col-md-12">Title</div>
+              </div>
+              <div className="row">
+                <div className="col-md-12"><Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/></div>
+              </div>
+              <div className="row">
+                <div className="col-md-12">Console message</div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="row">
+                <div className="col-md-12"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/><AddButton onClick={this.toggleDarkness} /></div>
+              </div>
+              <div className="row">
+                <div className="col-md-12"><Guide /></div>
+              </div>
+            </div>
+
           </div>
       </div>
     )

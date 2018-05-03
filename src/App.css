@@ -1,3 +1,5 @@
+
+
 .App {
   text-align: center;
 }
@@ -16,6 +18,14 @@ html{
   background-color: #99aab5;
 }
 
+.game{
+  background-color: black;
+
+}
+
+.col-md-12{
+  border: 1px solid red;
+}
 
 .gridContainer {
     /* width:720px */
