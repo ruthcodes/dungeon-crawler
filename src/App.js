@@ -171,7 +171,8 @@ class App extends Component {
             playerCol: col,
           })
         } else if(result === "playerDied"){
-          console.log("the player has died")
+          humane.log("You died");
+          this.reset();
         }
 
       } else if(board[row][col] === "boss"){
@@ -190,6 +191,11 @@ class App extends Component {
             playerCol: col,
             boss: boss,
           })
+          humane.log("You won!");
+          this.reset();
+        } else if (result === "playerDied"){
+          humane.log("You died");
+          this.reset();
         }
 
       }else{
@@ -501,8 +507,7 @@ class App extends Component {
       return "killed";
     }
     if(player.health <= 0){
-      humane.log("You died");
-      this.reset();
+      return "playerDied";
     }
 
     //calculate enemy damage based off dungeonFloor(level) * 5-10
@@ -525,16 +530,13 @@ class App extends Component {
       player: player,
     })
     if(player.health <= 0){
-      humane.log("You died");
-      this.reset();
       player.died = true;
       this.setState({
         player: player,
       })
+      return "playerDied";
     }
     if(boss.health <=0){
-      humane.log("You win!");
-      this.reset();
       return "killed";
     }
   }

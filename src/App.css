@@ -100,9 +100,12 @@ button{
 
 .statsContainer{
   display: block;
-  color: white;
+  background-color: white;
 }
 
+.guideContainer{
+  background-color: white;
+}
 
 #player{
   color:red;
