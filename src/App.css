@@ -3,11 +3,17 @@
 .App {
   text-align: center;
   font-family: 'Titillium Web', sans-serif;
-  background-color: #181818;
+  background: #5D4157;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
 
 html{
-  background-color: #181818;
+  background: #5D4157;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  min-width: 550px;
 }
 
 .cell{
@@ -21,17 +27,20 @@ html{
 }
 
 .game{
-  background-color: #181818;
-
+  background: #5D4157;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color:#00FF00;
   margin-left: 10px !important;
 }
 
 h1{
   padding:15px;
-  background-color: #000000;
+  background-color: #262626;
   margin-right: -30px;
   border:2px solid #101010;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
 }
 
 .title{
@@ -40,11 +49,13 @@ h1{
 }
 
 .gameWindow{
-  background-color: black;
+  background-color: #090909;
   padding-left:20px;
   border:2px solid #101010;
   overflow: hidden;
   padding-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
 }
 
 .row{
@@ -99,8 +110,8 @@ h1{
 }
 
 
-button{
-  margin: 5px;
+.btn{
+  border:1px solid #101010 !important;
 }
 
 .statsContainer{
@@ -112,9 +123,12 @@ button{
   width: 300px;
   margin: 0 auto;
   text-align: justify;
-  background-color: #000000;
+  background-color: #262626;
   padding: 20px;
   border:2px solid #101010;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
+  font-size: 20px;
 }
 
 .stats{
@@ -131,9 +145,11 @@ button{
   width: 300px;
   margin: 0 auto;
   text-align: justify;
-  background-color: #000000;
+  background-color: #262626;
   padding: 20px;
   border:2px solid #101010;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
 }
 
 .consoleMessage{
@@ -172,4 +188,104 @@ button{
 
 .limit{
   width:40px;
+}
+
+.guideLabels{
+  color: white;
+  margin-left: 20px;
+  font-size: 20px;
+}
+
+.statsData{
+  color:white;
+  float: right;
+  margin-right: 5px;
+}
+
+@media (max-width:767px) {
+  .statsData{
+    float: none;
+    margin-right: 5px;
+  }
+
+  .statsText{
+    width: 600px;
+    text-align: center;
+    margin-bottom: -20px;
+  }
+
+  .statsText > p{
+    display: inline;
+    font-size: 15px;
+    margin:5px;
+  }
+
+  .stats{
+    display: inline;
+  }
+
+  .guideContainer{
+    height:100px;
+  }
+
+  .guideText{
+    width: 600px;
+    text-align: center;
+  }
+  .guideText > p{
+    display: inline;
+  }
+  .guideLabels{
+    margin-left: 5px;
+    margin-right: 20px;
+  }
+
+}
+
+@media (max-width:640px){
+  .statsData{
+    float: none;
+    margin-right: 5px;
+  }
+
+
+  .statsText{
+    width: 475px;
+    padding: 0;
+    text-align: center;
+    margin-bottom: -20px;
+    margin-left: 5px;
+    margin: auto;
+  }
+
+  h1{
+    width: 520px;
+    margin: 0 auto;
+  }
+  .gameWindow{
+    width:400px;
+  }
+  .statsText > p{
+    display: inline;
+    font-size: 15px;
+    margin:5px;
+  }
+
+  .stats{
+    display: inline;
+  }
+
+  .guideText{
+    width: 475px;
+    text-align: center;
+    margin: 0 auto;
+  }
+  .guideText > p{
+    display: inline;
+  }
+  .guideLabels{
+    margin-left: 5px;
+    margin-right: 20px;
+    font-size: 15px;
+  }
 }

@@ -24,20 +24,20 @@ class App extends Component {
         level: 1,
         xpToLevel: 60,
         weapon: {
-          name: "fists",
+          name: "Fists",
           damage: 5
         },
         died: false,
       },
 
       weapons: [
-        {name:"brass knuckles",damage:10},
-        {name:"dagger",damage:15},
-        {name:"sword", damage:20},
-        {name:"laser", damage:25},
-        {name:"lightsaber",damage:26},
-        {name:"sharknado", damage:28},
-        {name: "kindness",damage:30}
+        {name:"Brass knuckles",damage:10},
+        {name:"Dagger",damage:15},
+        {name:"Sword", damage:20},
+        {name:"Laser", damage:25},
+        {name:"Lightsaber",damage:26},
+        {name:"Sharknado", damage:28},
+        {name:"Kindness",damage:30}
       ],
 
       weaponCounter: 0,
@@ -598,13 +598,16 @@ class App extends Component {
                 <div className="col-md-12 title"><h1>Rogue-like Dungeon Crawler</h1></div>
               </div>
               <div className="row">
+                <div className="col-md-12 d-block d-md-none stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
+              </div>
+              <div className="row">
                 <div className="col-md-12 gameWindow"><Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/></div>
               </div>
-    
+
             </div>
             <div className="col-md-4">
               <div className="row">
-                <div className="col-md-12 stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
+                <div className="col-md-12 d-none d-md-block stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
               </div>
               <div className="row">
                 <div className="col-md-12"><Guide /> <AddButton onClick={this.toggleDarkness} /></div>
@@ -622,11 +625,11 @@ function Stats(props){
   return(
     <div className="statsContainer">
       <div className="statsText">
-        <p>Health: {props.player.health}</p>
-        <p>Level: {props.player.level}</p>
-        <p>XP to next level: {props.player.xpToLevel}</p>
-        <p>Weapon: {props.player.weapon.name}</p>
-        <p>Dungeon level: {props.dungeonFloor}</p>
+        <p>Health: <span className="statsData">{props.player.health}</span></p>
+        <p>Level: <span className="statsData">{props.player.level}</span></p>
+        <p>XP to next level: <span className="statsData">{props.player.xpToLevel}</span></p>
+        <p>Weapon: <span className="statsData">{props.player.weapon.name}</span></p>
+        <p>Dungeon level: <span className="statsData">{props.dungeonFloor}</span></p>
       </div>
     </div>
   )
@@ -657,11 +660,11 @@ function Guide(props){
   return (
     <div className="guideContainer">
       <div className="guideText">
-        <p id="player"><FontAwesomeIcon icon={faSquare} />  Player</p>
-        <p id="health"><FontAwesomeIcon icon={faSquare} />  Health</p>
-        <p id="enemy"><FontAwesomeIcon icon={faSquare} />  Enemy</p>
-        <p id="weapon"><FontAwesomeIcon icon={faSquare} />  Weapon</p>
-        <p id="stairs"><FontAwesomeIcon icon={faSquare} />  Stairs</p>
+        <p id="player"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Player</span></p>
+        <p id="health"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Health</span></p>
+        <p id="enemy"><FontAwesomeIcon icon={faSquare} />  <span className="guideLabels">Enemy</span></p>
+        <p id="weapon"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Weapon</span></p>
+        <p id="stairs"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Stairs</span></p>
       </div>
     </div>
   )
