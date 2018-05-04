@@ -3,6 +3,8 @@ import './App.css';
 import humane from 'humane-js';
 import 'humane-js/themes/original.css';
 import './bootstrap.min.css';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faSquare from '@fortawesome/fontawesome-free-solid/faSquare'
 
 class App extends Component {
   constructor(props){
@@ -593,21 +595,19 @@ class App extends Component {
           <div className="row game">
             <div className="col-md-8">
               <div className="row">
-                <div className="col-md-12">Title</div>
+                <div className="col-md-12 title"><h1>Rogue-like Dungeon Crawler</h1></div>
               </div>
               <div className="row">
-                <div className="col-md-12"><Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/></div>
+                <div className="col-md-12 gameWindow"><Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/></div>
               </div>
-              <div className="row">
-                <div className="col-md-12">Console message</div>
-              </div>
+    
             </div>
             <div className="col-md-4">
               <div className="row">
-                <div className="col-md-12"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/><AddButton onClick={this.toggleDarkness} /></div>
+                <div className="col-md-12 stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
               </div>
               <div className="row">
-                <div className="col-md-12"><Guide /></div>
+                <div className="col-md-12"><Guide /> <AddButton onClick={this.toggleDarkness} /></div>
               </div>
             </div>
 
@@ -621,11 +621,13 @@ class App extends Component {
 function Stats(props){
   return(
     <div className="statsContainer">
-      <p>Health: {props.player.health}</p>
-      <p>Level: {props.player.level}</p>
-      <p>XP to next level: {props.player.xpToLevel}</p>
-      <p>Weapon: {props.player.weapon.name}</p>
-      <p>Dungeon level: {props.dungeonFloor}</p>
+      <div className="statsText">
+        <p>Health: {props.player.health}</p>
+        <p>Level: {props.player.level}</p>
+        <p>XP to next level: {props.player.xpToLevel}</p>
+        <p>Weapon: {props.player.weapon.name}</p>
+        <p>Dungeon level: {props.dungeonFloor}</p>
+      </div>
     </div>
   )
 }
@@ -638,7 +640,7 @@ function Cell(props) {
 
 function AddButton(props){
   return (
-    <button onClick={props.onClick}>Toggle Darkness</button>
+    <button className={"btn btn-dark"} onClick={props.onClick}>Toggle Darkness</button>
   )
 }
 
@@ -654,11 +656,13 @@ function Grid(props){
 function Guide(props){
   return (
     <div className="guideContainer">
-      <p id="player">Player</p>
-      <p id="health">Health</p>
-      <p id="enemy">Enemy</p>
-      <p id="weapon">Weapon</p>
-      <p id="stairs">Stairs</p>
+      <div className="guideText">
+        <p id="player"><FontAwesomeIcon icon={faSquare} />  Player</p>
+        <p id="health"><FontAwesomeIcon icon={faSquare} />  Health</p>
+        <p id="enemy"><FontAwesomeIcon icon={faSquare} />  Enemy</p>
+        <p id="weapon"><FontAwesomeIcon icon={faSquare} />  Weapon</p>
+        <p id="stairs"><FontAwesomeIcon icon={faSquare} />  Stairs</p>
+      </div>
     </div>
   )
 }
