@@ -4,22 +4,21 @@
   text-align: center;
   font-family: 'Titillium Web', sans-serif;
   background: #5D4157;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-repeat: no-repeat;
 }
 
 html{
   background: #5D4157;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   min-width: 550px;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .cell{
-  /*border: 1px solid #2c2f33;*/
   height: 30px;
   width: 30px;
   float: left;
@@ -28,7 +27,7 @@ background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Fir
   background-color: #99aab5;
 }
 
-.game{
+.page{
   background: #5D4157;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -64,13 +63,35 @@ h1{
 .row{
   padding:5px;
 }
+
 .gridContainer {
-    /* width:720px */
     width: 600px;
     margin: 20px auto;
     margin-bottom: 10px;
 }
+/* Colours for the key */
 
+#player{
+  color:red;
+}
+
+#enemy{
+  color: green;
+}
+
+#health{
+  color:yellow;
+}
+
+#weapon{
+  color: blue;
+}
+
+#stairs{
+  color: #FFA500;
+}
+
+/* Colours for cells in the game */
 
 [data-value="floor"] {
   background: #23272a;
@@ -112,14 +133,12 @@ h1{
   opacity: 0.3;
 }
 
-
 .btn{
   border:1px solid #101010 !important;
 }
 
 .statsContainer{
   display: block;
-
 }
 
 .statsText{
@@ -139,9 +158,14 @@ h1{
   padding-bottom: 40px;
 }
 
+.statsData{
+  color:white;
+  float: right;
+  margin-right: 5px;
+}
+
 .guideContainer{
   height:330px;
-
 }
 
 .guideText{
@@ -155,30 +179,10 @@ h1{
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
 }
 
-.consoleMessage{
-  text-align: left;
-  padding: 10px;
-  background-color: #000000;
-}
-
-#player{
-  color:red;
-}
-
-#enemy{
-  color: green;
-}
-
-#health{
-  color:yellow;
-}
-
-#weapon{
-  color: blue;
-}
-
-#stairs{
-  color: #FFA500;
+.guideLabels{
+  color: white;
+  margin-left: 20px;
+  font-size: 20px;
 }
 
 .invisible{
@@ -191,18 +195,6 @@ h1{
 
 .limit{
   width:40px;
-}
-
-.guideLabels{
-  color: white;
-  margin-left: 20px;
-  font-size: 20px;
-}
-
-.statsData{
-  color:white;
-  float: right;
-  margin-right: 5px;
 }
 
 @media (max-width:767px) {
@@ -235,9 +227,11 @@ h1{
     width: 600px;
     text-align: center;
   }
+
   .guideText > p{
     display: inline;
   }
+
   .guideLabels{
     margin-left: 5px;
     margin-right: 20px;
@@ -246,11 +240,15 @@ h1{
 }
 
 @media (max-width:640px){
+  h1{
+    width: 520px;
+    margin: 0 auto;
+  }
+
   .statsData{
     float: none;
     margin-right: 5px;
   }
-
 
   .statsText{
     width: 475px;
@@ -259,11 +257,6 @@ h1{
     margin-bottom: -20px;
     margin-left: 5px;
     margin: auto;
-  }
-
-  h1{
-    width: 520px;
-    margin: 0 auto;
   }
 
   .statsText > p{
@@ -281,9 +274,11 @@ h1{
     text-align: center;
     margin: 0 auto;
   }
+
   .guideText > p{
     display: inline;
   }
+
   .guideLabels{
     margin-left: 5px;
     margin-right: 20px;

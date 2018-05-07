@@ -3,8 +3,10 @@ import './App.css';
 import humane from 'humane-js';
 import 'humane-js/themes/original.css';
 import './bootstrap.min.css';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import faSquare from '@fortawesome/fontawesome-free-solid/faSquare'
+import { Stats } from './Stats';
+import { AddButton } from './AddButton';
+import { Grid } from './Grid';
+import { Guide } from './Guide';
 
 class App extends Component {
   constructor(props){
@@ -70,7 +72,6 @@ class App extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
     this.setGameEnvironment();
-
   }
 
   componentWillUnmount() {
@@ -109,25 +110,23 @@ class App extends Component {
     let boss = Object.assign({}, this.state.boss);
     let row;
     let col;
-
+    //left
     if(e.keyCode === 37 || e.keyCode === 65){
       col = this.state.playerCol-1;
       row = this.state.playerRow;
-      //left
     }
-
+    //right
     if (e.keyCode === 39 || e.keyCode === 68){
       col = this.state.playerCol+1;
       row = this.state.playerRow;
-      //right
     }
+    //up
     if (e.keyCode ===38 || e.keyCode === 87){
       col = this.state.playerCol;
       row = this.state.playerRow-1;
-      //up
     }
+    //down
     if (e.keyCode === 40 || e.keyCode === 83){
-      //down
       col = this.state.playerCol;
       row = this.state.playerRow+1;
     }
@@ -208,8 +207,14 @@ class App extends Component {
           playerCol: col,
         })
       }
-
     }
+    else {
+      board[this.state.playerRow][this.state.playerCol] = "player";
+      this.setState({
+        valBoard:board,
+      })
+    }
+
   }
 
   handleClick(){
@@ -224,6 +229,8 @@ class App extends Component {
 
     this.setState({
       player: player,
+      playerRow: this.state.playerRow,
+      playerCol: this.state.playerCol,
       rooms: [],
       enemies: [],
       dungeonFloor: 1,
@@ -238,7 +245,6 @@ class App extends Component {
     this.setState({
       dark: !this.state.dark,
     })
-
   }
 
   generateMapArray(){
@@ -262,7 +268,6 @@ class App extends Component {
     let maxAttempts = 100;
 
       while(counter < this.state.maxRooms && maxAttempts > 0){
-        //validLocation is true
         var validLocation = true;
         //randomly generate height,width, and locations
         var height = this.randomNumber(5,8);
@@ -270,17 +275,13 @@ class App extends Component {
         var locationRow = this.randomNumber(2,18);
         var locationCol = this.randomNumber(10,68);
         //check if height and width + locations is within the bounds of the board
-        //if it's not continue (go back to the top and make new room)
+        //if it's not start again
         if ((width + locationCol > 69) ||  (height + locationRow > 19)){
           maxAttempts--;
           continue;
         }
-        //col&width x
-        //nested loop, first through location row and then through location col (up to location + size)
-        //plus one ensures 1 between each room
-        //check that there isn't already a room there (true values)
-        //if there is, set validLocation to false, break
-
+        //+1 ensures gaps between rooms
+        //break if room already exists at location
         loop1:
         for (let i=locationRow -1; i< locationRow + height+1; i++){
           for (let x=locationCol-1; x< locationCol + width+1; x++){
@@ -316,7 +317,6 @@ class App extends Component {
           rooms: rooms,
         })
       }
-
       }
       return Promise.resolve('success');
   }
@@ -357,10 +357,12 @@ class App extends Component {
           to2col = this.randomNumber(rooms[i+1].locationCol, (rooms[i+1].locationCol + rooms[i+1].width)-1)
           to2row = rooms[i+1].locationRow;
         }
+          //connect rooms straight along a row
           if(from1row === to2row){
             for(let x= from1col; x< to2col; x++){
               board[from1row][x] = "floor";
             }
+          // otherwise, choose somewhere to turn
           } else {
             let turn = this.randomNumber(from1col,to2col);
 
@@ -379,7 +381,6 @@ class App extends Component {
             for (let i=turn;i<to2col;i++){
               board[to2row][i] = "floor";
             }
-
           }
       }
     })
@@ -436,7 +437,7 @@ class App extends Component {
             enemies.push(newEnemy);
           }
           if(object === "boss"){
-            if(board[row][col+1] == "floor" && board[row+1][col] == "floor" && board[row+1][col+1] == "floor"){
+            if(board[row][col+1] === "floor" && board[row+1][col] === "floor" && board[row+1][col+1] === "floor"){
               board[row][col] = object;
               board[row][col+1] = object;
               board[row+1][col] = object;
@@ -455,15 +456,12 @@ class App extends Component {
             boss: boss,
           })
         } else {
+          //if randomly selected cell is a wall
           continue;
         }
-
       }
       notPlaced = true;
-
     }
-
-
     return Promise.resolve('Success');
   }
 
@@ -479,12 +477,10 @@ class App extends Component {
     //find out which monster it is based on row/col
     let enemies = this.state.enemies.slice()
     let player = Object.assign({}, this.state.player);
-    //this is an array with the correct enemy object in it
+    //this is an array of all enemies not selected
     let remainingEnemies = enemies.filter(enemy => (enemy.row !== row || enemy.col !== col));
-    //console.log(remainingEnemies);
+    //this is an array with the correct enemy object in it
     let enemy = enemies.filter(enemy => (enemy.row === row && enemy.col === col));
-    //calculate damage by player based on player.level and player.weapon.damage
-    //minimum is player.weapon.damage/2 * level rounded, max is player.weapon.damage * level
     let playerAttack = Math.round(this.randomNumber(player.weapon.damage/2 * player.level, (player.weapon.damage * player.level)-1));
 
     enemy[0].health = enemy[0].health - playerAttack;
@@ -511,10 +507,6 @@ class App extends Component {
     if(player.health <= 0){
       return "playerDied";
     }
-
-    //calculate enemy damage based off dungeonFloor(level) * 5-10
-    //player attacks, minus that number from enemy.health
-    //monster attacks, minus that number from player.health
   }
 
   fightBoss(){
@@ -552,7 +544,7 @@ class App extends Component {
     player.weapon= {
       name: "fists",
       damage: 5
-    },
+    };
     player.died= false;
     boss = {health:100, row:0, row1:0, col:0, col1:0};
     this.setState({
@@ -591,8 +583,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-
-          <div className="row game">
+          <div className="row page">
             <div className="col-md-8">
               <div className="row">
                 <div className="col-md-12 title"><h1>Rogue-like Dungeon Crawler</h1></div>
@@ -613,61 +604,10 @@ class App extends Component {
                 <div className="col-md-12"><Guide /> <AddButton onClick={this.toggleDarkness} /></div>
               </div>
             </div>
-
           </div>
       </div>
     )
   }
-}
-
-
-function Stats(props){
-  return(
-    <div className="statsContainer">
-      <div className="statsText">
-        <p>Health: <span className="statsData">{props.player.health}</span></p>
-        <p>Level: <span className="statsData">{props.player.level}</span></p>
-        <p>XP to next level: <span className="statsData">{props.player.xpToLevel}</span></p>
-        <p>Weapon: <span className="statsData">{props.player.weapon.name}</span></p>
-        <p>Dungeon level: <span className="statsData">{props.dungeonFloor}</span></p>
-      </div>
-    </div>
-  )
-}
-
-function Cell(props) {
-    return (
-      <div className={"cell"} data-value={props['data-value']} data-row={props['data-row']} data-key={props['data-key']} data-col={props['data-col']} data-isvis={props['data-isvis']} dark={props.dark}></div>
-    )
-}
-
-function AddButton(props){
-  return (
-    <button className={"btn btn-dark"} onClick={props.onClick}>Toggle Darkness</button>
-  )
-}
-
-function Grid(props){
-  return(
-      <div className="gridContainer">
-        {props.board.map((nested, x) => nested.slice(props.playerCol-10,props.playerCol+10).map((element, i) =>
-          <Cell key={i+x} data-row={x} wallColour={props.wallColour} data-col={props.playerCol-10+i} data-value={element} data-isvis={(props.dark) ? props.checkRendering(x,props.playerCol-10+i) : "Visible"}/>))}
-      </div>
-  )
-}
-
-function Guide(props){
-  return (
-    <div className="guideContainer">
-      <div className="guideText">
-        <p id="player"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Player</span></p>
-        <p id="health"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Health</span></p>
-        <p id="enemy"><FontAwesomeIcon icon={faSquare} />  <span className="guideLabels">Enemy</span></p>
-        <p id="weapon"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Weapon</span></p>
-        <p id="stairs"><FontAwesomeIcon icon={faSquare} /> <span className="guideLabels">Stairs</span></p>
-      </div>
-    </div>
-  )
 }
 
 export default App;
