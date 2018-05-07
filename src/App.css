@@ -6,7 +6,7 @@
   background: #5D4157;  /* fallback for old browsers */
 background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  background-repeat: no-repeat;
 }
 
 html{
@@ -14,6 +14,8 @@ html{
 background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   min-width: 550px;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .cell{
@@ -32,6 +34,7 @@ background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Fir
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color:#00FF00;
   margin-left: 10px !important;
+  background-repeat: no-repeat;
 }
 
 h1{
@@ -69,7 +72,7 @@ h1{
 }
 
 
-[data-value="true"] {
+[data-value="floor"] {
   background: #23272a;
 }
 
@@ -262,9 +265,7 @@ h1{
     width: 520px;
     margin: 0 auto;
   }
-  .gameWindow{
-    width:400px;
-  }
+
   .statsText > p{
     display: inline;
     font-size: 15px;

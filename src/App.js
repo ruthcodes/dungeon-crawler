@@ -105,7 +105,7 @@ class App extends Component {
   handleKeyDown(e){
     e.preventDefault();
     let board = this.state.valBoard.slice();
-    board[this.state.playerRow][this.state.playerCol] = true;
+    board[this.state.playerRow][this.state.playerCol] = "floor";
     let boss = Object.assign({}, this.state.boss);
     let row;
     let col;
@@ -133,7 +133,7 @@ class App extends Component {
     }
     if(this.validMove(row, col)){
       if(board[row][col] === "stairs"){
-        board[row][col] = true;
+        board[row][col] = "floor";
         this.setState({
           dungeonFloor: this.state.dungeonFloor + 1,
           rooms: [],
@@ -165,7 +165,7 @@ class App extends Component {
         board[this.state.playerRow][this.state.playerCol] = "player";
         let result = this.fightEnemy(row,col);
         if(result === "killed"){
-          board[this.state.playerRow][this.state.playerCol] = true;
+          board[this.state.playerRow][this.state.playerCol] = "floor";
           board[row][col] = "player";
           this.setState({
             valBoard:board,
@@ -181,11 +181,11 @@ class App extends Component {
         board[this.state.playerRow][this.state.playerCol] = "player";
         let result = this.fightBoss();
         if(result === "killed"){
-          board[boss.row][boss.col] = true;
-          board[boss.row1][boss.col1] = true;
-          board[boss.row][boss.col1] = true;
-          board[boss.row1][boss.col] = true;
-          board[this.state.playerRow][this.state.playerCol] = true;
+          board[boss.row][boss.col] = "floor";
+          board[boss.row1][boss.col1] = "floor";
+          board[boss.row][boss.col1] = "floor";
+          board[boss.row1][boss.col] = "floor";
+          board[this.state.playerRow][this.state.playerCol] = "floor";
           board[row][col] = "player";
           this.setState({
             valBoard:board,
@@ -246,7 +246,7 @@ class App extends Component {
     var rows = [];
     for (let i=0; i<this.state.height; i++){
       for (let x=0; x<this.state.width; x++){
-        rows.push(false)
+        rows.push("wall")
       }
       board.push(rows);
       rows = [];
@@ -284,7 +284,7 @@ class App extends Component {
         loop1:
         for (let i=locationRow -1; i< locationRow + height+1; i++){
           for (let x=locationCol-1; x< locationCol + width+1; x++){
-            if (this.state.valBoard[i][x] === true){
+            if (this.state.valBoard[i][x] === "floor"){
               validLocation = false;
               maxAttempts--;
               break loop1;
@@ -297,7 +297,7 @@ class App extends Component {
         if(validLocation){
           for (let i=locationRow; i< locationRow + height; i++){
             for (let x=locationCol; x< locationCol + width; x++){
-              board[i][x] = true
+              board[i][x] = "floor";
             }
           }
           counter++;
@@ -359,25 +359,25 @@ class App extends Component {
         }
           if(from1row === to2row){
             for(let x= from1col; x< to2col; x++){
-              board[from1row][x] = true;
+              board[from1row][x] = "floor";
             }
           } else {
             let turn = this.randomNumber(from1col,to2col);
 
             for(let i=from1col;i<turn;i++){
-              board[from1row][i] = true;
+              board[from1row][i] = "floor";
             }
             if (from1row < to2row){
               for(let i=from1row; i<to2row;i++){
-                board[i][turn] = true;
+                board[i][turn] = "floor";
               }
             } else {
               for(let i=from1row;i>to2row;i--){
-                board[i][turn] = true;
+                board[i][turn] = "floor";
               }
             }
             for (let i=turn;i<to2col;i++){
-              board[to2row][i] = true;
+              board[to2row][i] = "floor";
             }
 
           }
@@ -398,7 +398,7 @@ class App extends Component {
       let playerRow = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
       let playerCol = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
       let board = this.state.valBoard.slice();
-      if (board[playerRow][playerCol] === true){
+      if (board[playerRow][playerCol] === "floor"){
         board[playerRow][playerCol] = "player";
         notPlaced = false;
         this.setState({
@@ -426,7 +426,7 @@ class App extends Component {
         let n = this.randomNumber(0,rooms.length-1);
         let row = this.randomNumber(rooms[n].locationRow, (rooms[n].locationRow + rooms[n].height)-1);
         let col = this.randomNumber(rooms[n].locationCol, (rooms[n].locationCol + rooms[n].width)-1);
-        if (board[row][col] === true){
+        if (board[row][col] === "floor"){
           if(object !== "boss"){
             board[row][col] = object;
             notPlaced = false;
@@ -436,7 +436,7 @@ class App extends Component {
             enemies.push(newEnemy);
           }
           if(object === "boss"){
-            if(board[row][col+1] && board[row+1][col] && board[row+1][col+1]){
+            if(board[row][col+1] == "floor" && board[row+1][col] == "floor" && board[row+1][col+1] == "floor"){
               board[row][col] = object;
               board[row][col+1] = object;
               board[row+1][col] = object;
@@ -469,7 +469,7 @@ class App extends Component {
 
   validMove(row,col){
     let board = this.state.valBoard.slice();
-    if(row >= 0 && row < 20 && col >=0 && col <80 && board[row][col] !== false){
+    if(row >= 0 && row < 20 && col >=0 && col <80 && board[row][col] !== "wall"){
       return true;
     }
     return false;
