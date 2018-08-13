@@ -7,15 +7,23 @@
   background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-repeat: no-repeat;
+  height: 100%;
 }
 
 html{
   background: #5D4157;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  min-width: 550px;
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: auto;
+  max-height: 100vh;
+
+}
+
+body{
+  overflow: auto;
+
 }
 
 .cell{
@@ -32,8 +40,9 @@ html{
   background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color:#00FF00;
-  margin-left: 10px !important;
+  margin-left: 5px !important;
   background-repeat: no-repeat;
+
 }
 
 h1{
@@ -247,16 +256,14 @@ h1{
 
   .statsData{
     float: none;
-    margin-right: 5px;
+
   }
 
   .statsText{
-    width: 475px;
+    width: 100%;
     padding: 0;
     text-align: center;
-    margin-bottom: -20px;
-    margin-left: 5px;
-    margin: auto;
+
   }
 
   .statsText > p{
@@ -265,14 +272,11 @@ h1{
     margin:5px;
   }
 
-  .stats{
-    display: inline;
-  }
 
   .guideText{
-    width: 475px;
+    width: 100%;
     text-align: center;
-    margin: 0 auto;
+    margin: 0;
   }
 
   .guideText > p{
@@ -280,8 +284,10 @@ h1{
   }
 
   .guideLabels{
-    margin-left: 5px;
-    margin-right: 20px;
     font-size: 15px;
+  }
+
+  .toggle{
+    margin-bottom: 10px;
   }
 }

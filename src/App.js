@@ -7,11 +7,16 @@ import { Stats } from './Stats';
 import { AddButton } from './AddButton';
 import { Grid } from './Grid';
 import { Guide } from './Guide';
+import Keyboard from "simple-keyboard";
+import "simple-keyboard/build/css/index.css";
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      windowWidth: 0,
+      windowHeight: 0,
+
       valBoard: [],
       width: 80,
       height: 20,
@@ -48,6 +53,11 @@ class App extends Component {
       boss: {health:100, row:0, row1:0, col:0, col1:0},
       dungeonFloor: 1,
     };
+
+    document.addEventListener('DOMContentLoaded', this.onDOMLoaded);
+
+    this.layoutName = "default";
+
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.toggleDarkness = this.toggleDarkness.bind(this);
@@ -69,6 +79,35 @@ class App extends Component {
     this.reset = this.reset.bind(this);
 
   }
+
+  onDOMLoaded = () => {
+    this.keyboard = new Keyboard({
+      debug: true,
+      layoutName: this.layoutName,
+      onKeyPress: button => this.onKeyPress(button),
+      newLineOnEnter: true,
+      layout: {
+        'default': [
+          'w',
+          'a s d',
+        ]}
+    });
+
+  }
+  updateWindowDimensions() {
+    this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight });
+  }
+
+
+  onKeyPress = button => {
+    let e = new Event('keydown');
+    e.key=button
+
+    console.log(e)
+    this.handleKeyDown(e)
+  }
+
+
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
     this.setGameEnvironment();
@@ -111,22 +150,22 @@ class App extends Component {
     let row;
     let col;
     //left
-    if(e.keyCode === 37 || e.keyCode === 65){
+    if(e.keyCode === 37 || e.keyCode === 65 || e.key === "a"){
       col = this.state.playerCol-1;
       row = this.state.playerRow;
     }
     //right
-    if (e.keyCode === 39 || e.keyCode === 68){
+    if (e.keyCode === 39 || e.keyCode === 68 || e.key === "d"){
       col = this.state.playerCol+1;
       row = this.state.playerRow;
     }
     //up
-    if (e.keyCode ===38 || e.keyCode === 87){
+    if (e.keyCode ===38 || e.keyCode === 87 || e.key === "w"){
       col = this.state.playerCol;
       row = this.state.playerRow-1;
     }
     //down
-    if (e.keyCode === 40 || e.keyCode === 83){
+    if (e.keyCode === 40 || e.keyCode === 83 ||e.key === "s"){
       col = this.state.playerCol;
       row = this.state.playerRow+1;
     }
@@ -586,11 +625,13 @@ class App extends Component {
           <div className="row page">
             <div className="col-md-8">
               <div className="row">
-                <div className="col-md-12 title"><h1>Rogue-like Dungeon Crawler</h1></div>
+                <div className="col-md-12 title d-none d-sm-block"><h1>Rogue-like Dungeon Crawler</h1></div>
               </div>
               <div className="row">
-                <div className="col-md-12 d-block d-md-none stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
+                <div className="col-md-12 col-sm-12 col-6 d-inline d-md-none stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
+                <div className="col-6 d-inline d-sm-none"><Guide /></div>
               </div>
+
               <div className="row">
                 <div className="col-md-12 gameWindow"><Grid board={this.state.valBoard} checkRendering={this.checkRendering} playerRow={this.state.playerRow} playerCol={this.state.playerCol} dark={this.state.dark}/></div>
               </div>
@@ -601,9 +642,13 @@ class App extends Component {
                 <div className="col-md-12 d-none d-md-block stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
               </div>
               <div className="row">
-                <div className="col-md-12"><Guide /> <AddButton onClick={this.toggleDarkness} /></div>
+                <div className="col-md-12 d-none d-sm-block"><Guide /> <AddButton onClick={this.toggleDarkness} /></div>
               </div>
             </div>
+            <div className="simple-keyboard d-block d-sm-none"></div>
+
+            <div className="col-12 d-block d-md-none d-sm-none toggle"><AddButton onClick={this.toggleDarkness} /></div>
+
           </div>
       </div>
     )
