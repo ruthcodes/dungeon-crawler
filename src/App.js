@@ -621,14 +621,14 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="container-fluid App">
           <div className="row page">
             <div className="col-md-8">
               <div className="row">
                 <div className="col-md-12 title d-none d-sm-block"><h1>Rogue-like Dungeon Crawler</h1></div>
               </div>
               <div className="row">
-                <div className="col-md-12 col-sm-12 col-6 d-inline d-md-none stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
+                <div className="col-sm-12 col-6 d-inline d-md-none stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
                 <div className="col-6 d-inline d-sm-none"><Guide /></div>
               </div>
 
@@ -642,13 +642,13 @@ class App extends Component {
                 <div className="col-md-12 d-none d-md-block stats"><Stats player={this.state.player} dungeonFloor={this.state.dungeonFloor}/></div>
               </div>
               <div className="row">
-                <div className="col-md-12 d-none d-sm-block"><Guide /> <AddButton onClick={this.toggleDarkness} /></div>
+                <div className="col-md-12 d-none d-sm-block"><Guide /> </div>
+              </div>
+              <div className="row">
+                <div className="simple-keyboard"></div>
+                <div className="toggle"><AddButton onClick={this.toggleDarkness} /></div>
               </div>
             </div>
-            <div className="simple-keyboard d-block d-sm-none"></div>
-
-            <div className="col-12 d-block d-md-none d-sm-none toggle"><AddButton onClick={this.toggleDarkness} /></div>
-
           </div>
       </div>
     )

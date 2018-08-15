@@ -11,19 +11,17 @@
 }
 
 html{
+  overflow: auto;
+  min-width: 320px;
+}
+
+body{
   background: #5D4157;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-repeat: no-repeat;
   background-size: cover;
   overflow: auto;
-  max-height: 100vh;
-
-}
-
-body{
-  overflow: auto;
-
 }
 
 .cell{
@@ -40,15 +38,12 @@ body{
   background: -webkit-linear-gradient(to top, #A8CABA, #5D4157);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #A8CABA, #5D4157); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color:#00FF00;
-  margin-left: 5px !important;
   background-repeat: no-repeat;
-
 }
 
 h1{
   padding:15px;
   background-color: #262626;
-  margin-right: -30px;
   border:2px solid #101010;
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
@@ -56,7 +51,6 @@ h1{
 
 .title{
   padding-top:10px;
-  margin-left: -15px;
 }
 
 .gameWindow{
@@ -148,10 +142,11 @@ h1{
 
 .statsContainer{
   display: block;
+
 }
 
 .statsText{
-  width: 300px;
+  width: 230px;
   margin: 0 auto;
   text-align: justify;
   background-color: #262626;
@@ -159,12 +154,13 @@ h1{
   border:2px solid #101010;
   border-radius: 5px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.25);
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .stats{
   padding-top: 10px;
   padding-bottom: 40px;
+  font-size: 14px;
 }
 
 .statsData{
@@ -174,11 +170,11 @@ h1{
 }
 
 .guideContainer{
-  height:330px;
+  height:280px;
 }
 
 .guideText{
-  width: 300px;
+  width: 230px;
   margin: 0 auto;
   text-align: justify;
   background-color: #262626;
@@ -191,7 +187,7 @@ h1{
 .guideLabels{
   color: white;
   margin-left: 20px;
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .invisible{
@@ -206,26 +202,23 @@ h1{
   width:40px;
 }
 
+.toggle{
+  margin: auto;
+  margin-top: 10px;
+}
+
 @media (max-width:767px) {
-  .statsData{
-    float: none;
-    margin-right: 5px;
-  }
 
   .statsText{
     width: 600px;
     text-align: center;
     margin-bottom: -20px;
+    font-size: 15px;
   }
 
   .statsText > p{
-    display: inline;
-    font-size: 15px;
+    display: inline-block;
     margin:5px;
-  }
-
-  .stats{
-    display: inline;
   }
 
   .guideContainer{
@@ -238,7 +231,8 @@ h1{
   }
 
   .guideText > p{
-    display: inline;
+    display: inline-block;
+    margin-bottom: 0;
   }
 
   .guideLabels{
@@ -254,33 +248,15 @@ h1{
     margin: 0 auto;
   }
 
-  .statsData{
-    float: none;
-
-  }
-
   .statsText{
     width: 100%;
-    padding: 0;
-    text-align: center;
-
+    padding: 10px;
   }
-
-  .statsText > p{
-    display: inline;
-    font-size: 15px;
-    margin:5px;
-  }
-
 
   .guideText{
     width: 100%;
-    text-align: center;
-    margin: 0;
-  }
-
-  .guideText > p{
-    display: inline;
+    margin-top: 10px;
+    display: inline-block;
   }
 
   .guideLabels{
@@ -289,5 +265,17 @@ h1{
 
   .toggle{
     margin-bottom: 10px;
+  }
+}
+
+@media (max-width:474px){
+  .statsText, .guideText{
+    font-size: 14px;
+    height: 175px;
+  }
+
+  .statsText{
+    padding-top: 0;
+    font-size: 14px;
   }
 }
